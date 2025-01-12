@@ -134,7 +134,7 @@ def train_model(model, criterion, optimizer, scheduler,
 
         # load best model weights
         model.load_state_dict(torch.load(best_model_params_path))
-    return model
+    return model, best_model_params_path
 
 
 def load_model(model, num_classes, model_path, DEVICE):

@@ -1,3 +1,5 @@
 numpy
 pyyaml
 torch
+torchvision
+autoattack
