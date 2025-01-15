@@ -35,7 +35,7 @@ if __name__ == "__main__":
 
     #creates model dataset
     dataloaders, dataset_sizes, class_names = load_data(args)
-    logging.info(f'Len of Class: {len(class_names)}')
+    # logging.info(f'Len of Class: {len(class_names)}')
     
     #intializes model architecture
     model_conv, criterion, optimizer_conv, exp_lr_scheduler = init_model(
@@ -54,6 +54,7 @@ if __name__ == "__main__":
 
     else:
         run_id = get_run_id()
+        print("run id: ", run_id)
         init_log(args, label, config_file, run_id)
 
         model_conv, model_path = train_model(
@@ -61,10 +62,12 @@ if __name__ == "__main__":
             dataloaders, dataset_sizes, DEVICE, args, run_id, num_epochs=args['num_epochs'])
     
     if parsed_args.test_standard:
+        print("starting standard test")
         # Test the model and log the accuracy for reporting
         test_model(model_conv, dataloaders['val'], criterion, DEVICE)
 
     if parsed_args.test_robust:
+        print("starting robust test")
         autoattack_test(model_conv, dataloaders['val'], model_path, args['batch_size'])
 
     if parsed_args.test_interpretable: 
