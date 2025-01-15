@@ -28,12 +28,14 @@ def autoattack_test(model, test_loader, model_path, batch_size, norm= 'Linf', ep
             log_folder_path, run_id, 'aa', 'standard', adv_complete.shape[0], epsilon))
         
 
-def autoattack_benchmark(model, run_id):
+def autoattack_benchmark(model, run_id, device):
     logger = logging.getLogger(run_id)
     logger.info('==================<Autoattack Benchmark>==================')
     clean_acc, robust_acc = benchmark(model,
                                     dataset='cifar10',
-                                    threat_model='Linf')
+                                    threat_model='Linf',
+                                    device = device,
+                                    esps = 8./255.)
     logger.info(f'Test Loss: {clean_acc:.4f} Accuracy: {robust_acc:.4f}')
     
 

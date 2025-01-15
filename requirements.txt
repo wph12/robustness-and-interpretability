@@ -2,4 +2,4 @@ numpy
 pyyaml
 torch
 torchvision
-autoattack
+git+https://github.com/RobustBench/robustbench.git
