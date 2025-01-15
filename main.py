@@ -73,7 +73,7 @@ if __name__ == "__main__":
     if parsed_args.test_robust:
         print("starting robust test")
         # autoattack_test(model_conv, dataloaders['val'], model_path, args['batch_size'])
-        autoattack_benchmark(model_conv, run_id)
+        autoattack_benchmark(model_conv, run_id, DEVICE)
 
     if parsed_args.test_interpretable: 
         pass
