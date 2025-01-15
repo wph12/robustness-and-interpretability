@@ -50,7 +50,7 @@ if __name__ == "__main__":
         run_id = os.path.basename(model_path).split("_")[0]
         init_log(args, label, config_file, run_id)
 
-        model_conv = model_conv.load_state_dict(torch.load(model_path))
+        model_conv.load_state_dict(torch.load(model_path))
 
     else:
         run_id = get_run_id()
