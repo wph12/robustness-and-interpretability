@@ -35,13 +35,14 @@ if __name__ == "__main__":
 
     #creates model dataset
     dataloaders, dataset_sizes, class_names = load_data(args)
-    # logging.info(f'Len of Class: {len(class_names)}')
+    print(f'Len of Class: {len(class_names)}')
     
     #intializes model architecture
     model_conv, criterion, optimizer_conv, exp_lr_scheduler = init_model(
         DEVICE, args, len(class_names))
 
     model_path = ''
+    run_id = ''
 
     if parsed_args.state:
         model_path = parsed_args.state
@@ -50,7 +51,7 @@ if __name__ == "__main__":
         run_id = os.path.basename(model_path).split("_")[0]
         print("run id: ", run_id)
 
-        init_log(args, label, config_file, run_id)
+        logger = init_log(args, label, config_file, run_id)
 
         model_conv.load_state_dict(torch.load(model_path))
 
@@ -58,7 +59,7 @@ if __name__ == "__main__":
         run_id = get_run_id()
         print("run id: ", run_id)
 
-        init_log(args, label, config_file, run_id)
+        logger = init_log(args, label, config_file, run_id)
 
         model_conv, model_path = train_model(
             model_conv, criterion, optimizer_conv, exp_lr_scheduler, label,
@@ -67,7 +68,7 @@ if __name__ == "__main__":
     if parsed_args.test_standard:
         print("starting standard test")
         # Test the model and log the accuracy for reporting
-        test_model(model_conv, dataloaders['val'], criterion, DEVICE)
+        test_model(model_conv, dataloaders['val'], criterion, DEVICE, run_id)
 
     if parsed_args.test_robust:
         print("starting robust test")

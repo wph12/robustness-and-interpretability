@@ -21,6 +21,9 @@ from src.losses import LinfPGDAttack, cross_entropy_with_contrastive, cross_entr
 def train_model(model, criterion, optimizer, scheduler,
                 label, dataloaders, dataset_sizes, device, args, run_id,
                 num_epochs=25):
+    logger = logging.getLogger(run_id)
+    logger.info(str(model)) # print/log model architecture
+
     since = time.time()
 
     best_model_params_path = os.path.join(f'logs/{label}/{run_id}_best_model_params.pt')
@@ -34,8 +37,8 @@ def train_model(model, criterion, optimizer, scheduler,
         adversary = LinfPGDAttack(model)
 
     for epoch in range(num_epochs):
-        logging.info(f'Epoch {epoch}/{num_epochs - 1}')
-        logging.info('-' * 10)
+        logger.info(f'Epoch {epoch}/{num_epochs - 1}')
+        logger.info('-' * 10)
 
         # Each epoch has a training and validation phase
         for phase in ['train', 'val']:
@@ -118,7 +121,7 @@ def train_model(model, criterion, optimizer, scheduler,
             epoch_loss = running_loss / dataset_sizes[phase]
             epoch_acc = running_corrects.double() / dataset_sizes[phase]
 
-            logging.info(
+            logger.info(
                 f'{phase} Loss: {epoch_loss:.4f} Acc: {epoch_acc:.4f}')
 
             # deep copy the model
@@ -126,39 +129,39 @@ def train_model(model, criterion, optimizer, scheduler,
                 best_acc = epoch_acc
                 torch.save(model.state_dict(), best_model_params_path)
 
-        logging.info('==================')
+        logger.info('==================')
         time_elapsed = time.time() - since
-        logging.info(
+        logger.info(
             f'Training complete in {time_elapsed // 60:.0f}m {time_elapsed % 60:.0f}s')
-        logging.info(f'Best val Acc: {best_acc:4f}')
+        logger.info(f'Best val Acc: {best_acc:4f}')
 
         # load best model weights
         model.load_state_dict(torch.load(best_model_params_path))
     return model, best_model_params_path
 
 
-def load_model(model, num_classes, model_path, DEVICE):
-    '''load model from saved model parameters.'''
-    # ==> MODEL <==
-    if model == 'resnet18':
-        model = torchvision.models.resnet18(weights='IMAGENET1K_V1')
-        # model = ResNet18()
-    elif model == 'resnet50':
-        model = torchvision.models.resnet50(weights='IMAGENET1K_V2')
+# def load_model(model, num_classes, model_path, DEVICE):
+#     '''load model from saved model parameters.'''
+#     # ==> MODEL <==
+#     if model == 'resnet18':
+#         model = torchvision.models.resnet18(weights='IMAGENET1K_V1')
+#         # model = ResNet18()
+#     elif model == 'resnet50':
+#         model = torchvision.models.resnet50(weights='IMAGENET1K_V2')
 
-    for param in model.parameters():
-        param.requires_grad = False
+#     for param in model.parameters():
+#         param.requires_grad = False
 
-    # Parameters of newly constructed modules have requires_grad=True by default
-    num_ftrs = model.fc.in_features
-    model.fc = nn.Linear(num_ftrs, num_classes)
+#     # Parameters of newly constructed modules have requires_grad=True by default
+#     num_ftrs = model.fc.in_features
+#     model.fc = nn.Linear(num_ftrs, num_classes)
 
-    # load pretrained model
-    model.load_state_dict(torch.load(model_path))
-    # To GPU
-    model = model.to(DEVICE)
+#     # load pretrained model
+#     model.load_state_dict(torch.load(model_path))
+#     # To GPU
+#     model = model.to(DEVICE)
 
-    return model
+#     return model
 
 
 def init_model(DEVICE, args, num_classes):
@@ -170,18 +173,18 @@ def init_model(DEVICE, args, num_classes):
         model = torchvision.models.resnet50(weights='IMAGENET1K_V2')
 
     if args['learning'] == 'tl':
-        logging.info('Transfer Learning (only fc layer is trainable)')
+        print('Transfer Learning (only fc layer is trainable)')
         for param in model.parameters():
             param.requires_grad = False
     elif args['learning'] == 'full':
-        logging.info('Full Training (all parameters are trainable))')
+        print('Full Training (all parameters are trainable))')
         for param in model.parameters():
             param.requires_grad = True
 
     # Parameters of newly constructed modules have requires_grad=True by default
     num_ftrs = model.fc.in_features
     model.fc = nn.Linear(num_ftrs, num_classes)
-    logging.info(str(model)) # print/log model architecture
+    print(str(model)) # print/log model architecture
     # To GPU
     model = model.to(DEVICE)
     # ===

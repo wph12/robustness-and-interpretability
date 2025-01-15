@@ -2,7 +2,7 @@ import logging
 import torch
 
 
-def test_model(model, dataloader, criterion, device):
+def test_model(model, dataloader, criterion, device, run_id):
     model.eval()  # Set the model to evaluation mode
     running_loss = 0.0
     running_corrects = 0
@@ -25,5 +25,6 @@ def test_model(model, dataloader, criterion, device):
     # Calculate final metrics
     total_loss = running_loss / len(dataloader.dataset)
     accuracy = running_corrects.double() / len(dataloader.dataset)
-    logging.info('==================<TEST>==================')
-    logging.info(f'Test Loss: {total_loss:.4f} Accuracy: {accuracy:.4f}')
+    logger = logging.getLogger(run_id)
+    logger.info('==================<TEST>==================')
+    logger.info(f'Test Loss: {total_loss:.4f} Accuracy: {accuracy:.4f}')

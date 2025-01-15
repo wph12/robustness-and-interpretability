@@ -37,17 +37,22 @@ def init_log(args, label, config_file, run_id):
     print("log file location: ", log_file)
     
     # Configure logger
-    logging.basicConfig(filename=log_file, level=logging.INFO,
+    logging.basicConfig(filename=log_file, filemode= 'a', level=logging.INFO,
                         format='%(asctime)s %(levelname)s: %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
     console = logging.StreamHandler()
     console.setLevel(logging.INFO)
     formatter = logging.Formatter(
         '%(asctime)s %(levelname)s: %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
     console.setFormatter(formatter)
-    logging.getLogger('').addHandler(console)
+    
+    logger = logging.getLogger(run_id)
+    logger.setLevel(logging.INFO)
+    logger.addHandler(console)
 
     # Log the hyperparameters
-    logging.info('Using config file: ' + config_file)
-    logging.info("Logging Hyperparameters:")
+    logger.info('Using config file: ' + config_file)
+    logger.info("Logging Hyperparameters:")
     for key, value in args.items():
-        logging.info(f"\t{key}: {value}")
+        logger.info(f"\t{key}: {value}")
+    
+    return logger

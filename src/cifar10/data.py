@@ -38,7 +38,7 @@ def load_cifar_data(args):
                         std=[0.229, 0.224, 0.225])
         ]),
     }
-    logging.info(f'Data transform:\n{data_transforms}')
+    print(f'Data transform:\n{data_transforms}')
 
     # Load CIFAR data
     if args['dataset'] == 'cifar10':
@@ -92,7 +92,7 @@ def load_hymenoptera_data(args):
             T.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
         ]),
     }
-    logging.info(f'Data transform:\n{data_transforms}')
+    print(f'Data transform:\n{data_transforms}')
 
     data_dir = 'data/hymenoptera_data'
     image_datasets = {x: datasets.ImageFolder(
