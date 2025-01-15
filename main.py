@@ -8,7 +8,7 @@ import yaml
 
 from src.cifar10.data import load_data
 from src.cifar10.test_baseline import test_model
-from src.cifar10.test_robust import autoattack_test
+from src.cifar10.test_robust import autoattack_test, autoattack_benchmark
 from src.cifar10.train import init_model, train_model
 from src.utils import get_label, init_log, make_training_deterministic, get_run_id
 
@@ -72,7 +72,8 @@ if __name__ == "__main__":
 
     if parsed_args.test_robust:
         print("starting robust test")
-        autoattack_test(model_conv, dataloaders['val'], model_path, args['batch_size'])
+        # autoattack_test(model_conv, dataloaders['val'], model_path, args['batch_size'])
+        autoattack_benchmark(model_conv, run_id)
 
     if parsed_args.test_interpretable: 
         pass

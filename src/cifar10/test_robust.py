@@ -2,7 +2,9 @@
 
 import torch
 import os
+import logging
 from autoattack import AutoAttack
+from robustbench.eval import benchmark
 
 
 def autoattack_test(model, test_loader, model_path, batch_size, norm= 'Linf', epsilon= 8./255.):
@@ -24,3 +26,15 @@ def autoattack_test(model, test_loader, model_path, batch_size, norm= 'Linf', ep
         
         torch.save({'adv_complete': adv_complete}, '{}/{}_{}_{}_1_{}_eps_{:.5f}.pth'.format(
             log_folder_path, run_id, 'aa', 'standard', adv_complete.shape[0], epsilon))
+        
+
+def autoattack_benchmark(model, run_id):
+    logger = logging.getLogger(run_id)
+    logger.info('==================<Autoattack Benchmark>==================')
+    clean_acc, robust_acc = benchmark(model,
+                                    dataset='cifar10',
+                                    threat_model='Linf')
+    logger.info(f'Test Loss: {clean_acc:.4f} Accuracy: {robust_acc:.4f}')
+    
+
+
