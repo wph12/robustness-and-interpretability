@@ -48,6 +48,8 @@ if __name__ == "__main__":
 
         #gets run id and inits log
         run_id = os.path.basename(model_path).split("_")[0]
+        print("run id: ", run_id)
+
         init_log(args, label, config_file, run_id)
 
         model_conv.load_state_dict(torch.load(model_path))
@@ -55,6 +57,7 @@ if __name__ == "__main__":
     else:
         run_id = get_run_id()
         print("run id: ", run_id)
+
         init_log(args, label, config_file, run_id)
 
         model_conv, model_path = train_model(

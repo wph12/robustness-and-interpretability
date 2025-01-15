@@ -34,6 +34,7 @@ def init_log(args, label, config_file, run_id):
     # Create directory for logs
     os.makedirs(f'./logs/{label}', exist_ok=True)
     log_file = f"./logs/{label}/{run_id}.log"
+    print("log file location: ", log_file)
     
     # Configure logger
     logging.basicConfig(filename=log_file, level=logging.INFO,
