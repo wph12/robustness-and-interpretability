@@ -54,7 +54,6 @@ if __name__ == "__main__":
         logger = init_log(args, label, config_file, run_id)
 
         model_conv.load_state_dict(torch.load(model_path))
-
     else:
         run_id = get_run_id()
         print("run id: ", run_id)
@@ -64,7 +63,10 @@ if __name__ == "__main__":
         model_conv, model_path = train_model(
             model_conv, criterion, optimizer_conv, exp_lr_scheduler, label,
             dataloaders, dataset_sizes, DEVICE, args, run_id, num_epochs=args['num_epochs'])
-    
+
+    #set to eval mode
+    model_conv.eval()
+
     if parsed_args.test_standard:
         print("starting standard test")
         # Test the model and log the accuracy for reporting
