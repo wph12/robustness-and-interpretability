@@ -4,13 +4,14 @@ import numpy as np
 import os
 import time
 
-
 # Torch
 import torch
 import torch.nn as nn
 import torch.optim as optim
 import torchvision
 from torch.optim import lr_scheduler
+
+from robustbench.model_zoo.architectures.resnet import ResNet18
 
 # local imports
 from src.losses import LinfPGDAttack, cross_entropy_with_contrastive, cross_entropy_with_kl, cross_entropy_with_triplet, mixup_data, mixup_criterion
@@ -23,6 +24,8 @@ def train_model(model, criterion, optimizer, scheduler,
                 num_epochs=25):
     logger = logging.getLogger(run_id)
     logger.info(str(model)) # print/log model architecture
+    logger.info("USING DEVICE: ", device) # print/log model architecture
+
 
     since = time.time()
 
@@ -168,7 +171,8 @@ def init_model(DEVICE, args, num_classes):
     # ==> MODEL <==
     
     if args['model'] == 'resnet18':
-        model = torchvision.models.resnet18(weights='IMAGENET1K_V1')
+        model = ResNet18()
+        # model = torchvision.models.resnet18(weights='IMAGENET1K_V1')
     elif args['model'] == 'resnet50':
         model = torchvision.models.resnet50(weights='IMAGENET1K_V2')
 

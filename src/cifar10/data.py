@@ -18,24 +18,24 @@ def load_data(args):
 
 def load_cifar_data(args):    
     train_xform = [
-        T.Resize((224, 224)),
+        # T.Resize((224, 224)),
         T.RandomHorizontalFlip(),
     ]
     if args['data_xform'] == "augmix":
         train_xform += [T.AugMix()]
     train_xform += [
         T.ToTensor(),
-        T.Normalize(mean=[0.485, 0.456, 0.406],
-                    std=[0.229, 0.224, 0.225])
+        # T.Normalize(mean=[0.485, 0.456, 0.406],
+        #             std=[0.229, 0.224, 0.225])
     ]
 
     data_transforms = {
         'train': T.Compose(train_xform),
         'val': T.Compose([
-            T.Resize((224, 224)),
+            # T.Resize((224, 224)),
             T.ToTensor(),
-            T.Normalize(mean=[0.485, 0.456, 0.406],
-                        std=[0.229, 0.224, 0.225])
+            # T.Normalize(mean=[0.485, 0.456, 0.406],
+            #             std=[0.229, 0.224, 0.225])
         ]),
     }
     print(f'Data transform:\n{data_transforms}')

@@ -36,7 +36,7 @@ def autoattack_benchmark(model, run_id, device):
                                     threat_model='Linf',
                                     device = device,
                                     eps = 8./255.)
-    logger.info(f'Test Loss: {clean_acc:.4f} Accuracy: {robust_acc:.4f}')
+    logger.info(f'Clean Accuracy: {clean_acc:.4f} Robust Accuracy: {robust_acc:.4f}')
     
 
 
