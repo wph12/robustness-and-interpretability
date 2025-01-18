@@ -186,8 +186,8 @@ def init_model(DEVICE, args, num_classes):
             param.requires_grad = True
 
     # Parameters of newly constructed modules have requires_grad=True by default
-    num_ftrs = model.fc.in_features
-    model.fc = nn.Linear(num_ftrs, num_classes)
+    # num_ftrs = model.fc.in_features
+    # model.fc = nn.Linear(num_ftrs, num_classes)
     print(str(model)) # print/log model architecture
     # To GPU
     model = model.to(DEVICE)
