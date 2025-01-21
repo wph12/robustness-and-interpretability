@@ -14,9 +14,7 @@ from torch.optim import lr_scheduler
 from robustbench.model_zoo.architectures.resnet import ResNet18
 
 # local imports
-from src.losses import LinfPGDAttack, cross_entropy_with_contrastive, cross_entropy_with_kl, cross_entropy_with_triplet, mixup_data, mixup_criterion
-
-
+from src.losses import LinfPGDAttack, cross_entropy_with_contrastive, cross_entropy_with_kl, cross_entropy_with_triplet, mixup_data, mixup_criterion, trades_loss
 
 
 def train_model(model, criterion, optimizer, scheduler,
@@ -24,7 +22,7 @@ def train_model(model, criterion, optimizer, scheduler,
                 num_epochs=25):
     logger = logging.getLogger(run_id)
     logger.info(str(model)) # print/log model architecture
-    logger.info("USING DEVICE: ", device) # print/log model architecture
+    logger.info("USING DEVICE: ", str(device)) # print/log model architecture
 
 
     since = time.time()
@@ -108,7 +106,12 @@ def train_model(model, criterion, optimizer, scheduler,
                                        (1 - adv_lam) * predicted.eq(adv_targets_b).sum().float())
                         
                         loss = (loss1 + loss2) / 2
-                        
+                    
+                    elif args['adversarial' == 'TRADES']:
+                        loss = trades_loss(model=model,
+                           x_natural=inputs,
+                           y=labels,
+                           optimizer=optimizer)
 
                     # backward + optimize only if in training phase
                     if phase == 'train':
