@@ -108,11 +108,15 @@ def train_model(model, criterion, optimizer, scheduler,
                         loss = (loss1 + loss2) / 2
                     
                     elif args['adversarial'] == 'TRADES':
+                        outputs = model(inputs)
+                        # predication and loss computation
+                        _, preds = torch.max(outputs, 1)
+                        
                         loss = trades_loss(model=model,
                            x_natural=inputs,
                            y=labels,
                            optimizer=optimizer)
-
+                        
                     # backward + optimize only if in training phase
                     if phase == 'train':
                         loss.backward()
