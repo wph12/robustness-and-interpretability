@@ -22,7 +22,7 @@ def train_model(model, criterion, optimizer, scheduler,
                 num_epochs=25):
     logger = logging.getLogger(run_id)
     logger.info(str(model)) # print/log model architecture
-    logger.info("USING DEVICE: ", str(device)) # print/log model architecture
+    logger.info("USING DEVICE: %s", device)
 
 
     since = time.time()
@@ -107,7 +107,7 @@ def train_model(model, criterion, optimizer, scheduler,
                         
                         loss = (loss1 + loss2) / 2
                     
-                    elif args['adversarial' == 'TRADES']:
+                    elif args['adversarial'] == 'TRADES':
                         loss = trades_loss(model=model,
                            x_natural=inputs,
                            y=labels,
