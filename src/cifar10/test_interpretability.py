@@ -1,0 +1,36 @@
+import torch
+import logging
+import torchvision
+import torchvision.transforms as transforms
+import torchvision.transforms.functional as TF
+
+from torchvision import models
+
+from captum.attr import IntegratedGradients
+
+def integrated_gradient(model, dataloader, run_id):
+    logger = logging.getLogger(run_id)
+
+    cosine_similarities = []
+    model.zero_grad()
+    ig = IntegratedGradients(model)
+
+    for images, labels in dataloader:
+        # Compute attributions
+        attributions, _ = ig.attribute(
+            images, baselines=torch.zeros_like(images), target=labels, return_convergence_delta=True
+        )
+        
+        # Step 4: Flatten Inputs and Attributions
+        images_flat = images.view(images.size(0), -1)  # Flatten each image into 1D
+        attributions_flat = attributions.view(attributions.size(0), -1)  # Flatten attributions
+        
+        # Step 5: Compute Cosine Similarity
+        similarity = TF.cosine_similarity(images_flat, attributions_flat, dim=1)
+        cosine_similarities.extend(similarity.tolist())
+
+    cosine_similarities = torch.tensor(cosine_similarities)
+    mean_similarity = cosine_similarities.mean().item()
+
+    print(f"Mean Cosine Similarity: {mean_similarity:.4f}")
+    logger.info(f"Mean Cosine Similarity: {mean_similarity:.4f}")
