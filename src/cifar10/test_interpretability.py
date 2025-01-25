@@ -8,7 +8,7 @@ from torchvision import models
 
 from captum.attr import IntegratedGradients, Saliency
 
-def integrated_gradient(model, dataloader, run_id):
+def integrated_gradient(model, dataloader, run_id, device):
     logger = logging.getLogger(run_id)
 
     cosine_similarities = []
@@ -16,6 +16,9 @@ def integrated_gradient(model, dataloader, run_id):
     ig = IntegratedGradients(model)
 
     for images, labels in dataloader:
+        inputs = inputs.to(device)
+        labels = labels.to(device)
+
         # Compute attributions
         attributions, _ = ig.attribute(
             images, baselines=torch.zeros_like(images), target=labels, return_convergence_delta=True
@@ -35,7 +38,7 @@ def integrated_gradient(model, dataloader, run_id):
     print(f"Mean Cosine Similarity (IG): {mean_similarity:.4f}")
     logger.info(f"Mean Cosine Similarity (IG): {mean_similarity:.4f}")
 
-def saliency(model, dataloader, run_id):
+def saliency(model, dataloader, run_id, device):
     logger = logging.getLogger(run_id)
 
     cosine_similarities = []
@@ -43,6 +46,9 @@ def saliency(model, dataloader, run_id):
     sal = Saliency(model)
 
     for images, labels in dataloader:
+
+        inputs = inputs.to(device)
+        labels = labels.to(device)
         # Compute attributions
         attributions = sal.attribute(
             images, target=labels

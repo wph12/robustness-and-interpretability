@@ -80,4 +80,4 @@ if __name__ == "__main__":
 
     if parsed_args.test_interpretable: 
         print("starting interpretability test")
-        saliency(model_conv,dataloaders['val'], run_id)
+        saliency(model_conv,dataloaders['val'], run_id, DEVICE)
