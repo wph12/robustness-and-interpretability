@@ -45,7 +45,7 @@ def saliency(model, dataloader, run_id):
     for images, labels in dataloader:
         # Compute attributions
         attributions = sal.attribute(
-            images, baselines=torch.zeros_like(images), target=labels
+            images, target=labels
         )
         
         # Step 4: Flatten Inputs and Attributions
