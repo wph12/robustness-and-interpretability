@@ -16,7 +16,7 @@ def integrated_gradient(model, dataloader, run_id, device):
     ig = IntegratedGradients(model)
 
     for images, labels in dataloader:
-        inputs = inputs.to(device)
+        images = images.to(device)
         labels = labels.to(device)
 
         # Compute attributions
@@ -47,7 +47,7 @@ def saliency(model, dataloader, run_id, device):
 
     for images, labels in dataloader:
 
-        inputs = inputs.to(device)
+        images = images.to(device)
         labels = labels.to(device)
         # Compute attributions
         attributions = sal.attribute(
