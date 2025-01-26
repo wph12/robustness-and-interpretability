@@ -29,8 +29,7 @@ def integrated_gradient(model, dataloader, run_id, device):
         attributions_flat = attributions.view(attributions.size(0), -1)  # Flatten attributions
         
         # Step 5: Compute Cosine Similarity
-        similarity = F.cosine_similarity(images_flat, attributions_flat, dim=1) * torch.norm(images_flat, p=2)
-        similarity = torch.abs(similarity)
+        similarity = torch.abs(F.cosine_similarity(images_flat, attributions_flat, dim=1))
         cosine_similarities.extend(similarity.tolist())
 
     cosine_similarities = torch.tensor(cosine_similarities)
@@ -60,9 +59,16 @@ def saliency(model, dataloader, run_id, device):
         attributions_flat = attributions.view(attributions.size(0), -1)  # Flatten attributions
         
         # Step 5: Compute Cosine Similarity
-        similarity = F.cosine_similarity(images_flat, attributions_flat, dim=1) * torch.norm(images_flat, p=2)
-        similarity = torch.abs(similarity)
+        similarity = torch.abs(F.cosine_similarity(images_flat, attributions_flat, dim=1)) 
         cosine_similarities.extend(similarity.tolist())
+
+        # inner_products = torch.sum(images * attributions, dim=(1, 2, 3))
+        # sensitivity_norms = torch.sqrt(torch.sum(attributions**2, dim=(1, 2, 3)))
+        # image_norms = torch.sqrt(torch.sum(images**2, dim=(1, 2, 3)))
+        # norm_products = sensitivity_norms * image_norms
+        # epsilon = 1e-8
+        # correlation = inner_products / (norm_products + epsilon)
+        # cosine_similarities.append(correlation)
 
     cosine_similarities = torch.tensor(cosine_similarities)
     mean_similarity = cosine_similarities.mean().item()
