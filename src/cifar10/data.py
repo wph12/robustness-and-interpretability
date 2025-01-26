@@ -64,8 +64,11 @@ def load_cifar_data(args):
         'val': DataLoader(
             val_dataset, batch_size=args['batch_size'],
             shuffle=False, num_workers=4, pin_memory=True),
+        'test': DataLoader(
+            val_dataset, batch_size=1,
+            shuffle=False, num_workers=4, pin_memory=True),
     }
-    dataset_sizes = {'train': len(full_dataset), 'val': len(val_dataset)}
+    dataset_sizes = {'train': len(full_dataset), 'val': len(val_dataset), 'test': len(full_dataset)}
     return dataloaders, dataset_sizes, class_names
 
 

@@ -71,7 +71,7 @@ if __name__ == "__main__":
     if parsed_args.test_standard:
         print("starting standard test")
         # Test the model and log the accuracy for reporting
-        test_model(model_conv, dataloaders['val'], criterion, DEVICE, run_id)
+        test_model(model_conv, dataloaders['test'], criterion, DEVICE, run_id)
 
     if parsed_args.test_robust:
         print("starting robust test")
@@ -80,4 +80,4 @@ if __name__ == "__main__":
 
     if parsed_args.test_interpretable: 
         print("starting interpretability test")
-        saliency(model_conv,dataloaders['val'], run_id, DEVICE)
+        saliency(model_conv,dataloaders['test'], run_id, DEVICE)
