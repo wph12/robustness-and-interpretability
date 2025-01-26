@@ -29,7 +29,7 @@ def integrated_gradient(model, dataloader, run_id, device):
         attributions_flat = attributions.view(attributions.size(0), -1)  # Flatten attributions
         
         # Step 5: Compute Cosine Similarity
-        similarity = F.cosine_similarity(images_flat, attributions_flat, dim=1)
+        similarity = F.cosine_similarity(images_flat, attributions_flat, dim=1) * torch.norm(images_flat, p=2)
         cosine_similarities.extend(similarity.tolist())
 
     cosine_similarities = torch.tensor(cosine_similarities)
@@ -59,7 +59,7 @@ def saliency(model, dataloader, run_id, device):
         attributions_flat = attributions.view(attributions.size(0), -1)  # Flatten attributions
         
         # Step 5: Compute Cosine Similarity
-        similarity = F.cosine_similarity(images_flat, attributions_flat, dim=1)
+        similarity = F.cosine_similarity(images_flat, attributions_flat, dim=1) * torch.norm(images_flat, p=2)
         cosine_similarities.extend(similarity.tolist())
 
     cosine_similarities = torch.tensor(cosine_similarities)
