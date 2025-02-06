@@ -71,4 +71,4 @@ def saliency(model, dataloader, run_id, device):
 
     median_similarity = cosine_similarities.median().item()
     print(f"Median Cosine Similarity (Saliency): {median_similarity:.4f}")
-    logger.info(f"Mean Cosine Similarity (Saliency): {median_similarity:.4f}")
+    logger.info(f"Median Cosine Similarity (Saliency): {median_similarity:.4f}")
