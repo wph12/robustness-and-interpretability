@@ -24,12 +24,8 @@ def integrated_gradient(model, dataloader, run_id, device):
             images, baselines=torch.zeros_like(images), target=labels, return_convergence_delta=True
         )
         
-        # Step 4: Flatten Inputs and Attributions
-        images_flat = images.view(images.size(0), -1)  # Flatten each image into 1D
-        attributions_flat = attributions.view(attributions.size(0), -1)  # Flatten attributions
-        
         # Step 5: Compute Cosine Similarity
-        similarity = torch.abs(F.cosine_similarity(images_flat, attributions_flat, dim=1))
+        similarity = torch.abs(F.cosine_similarity(images, attributions, dim=1))
         cosine_similarities.extend(similarity.tolist())
 
     cosine_similarities = torch.tensor(cosine_similarities)
@@ -54,12 +50,8 @@ def saliency(model, dataloader, run_id, device):
             images, target=labels
         )
         
-        # Step 4: Flatten Inputs and Attributions
-        images_flat = images.view(images.size(0), -1)  # Flatten each image into 1D
-        attributions_flat = attributions.view(attributions.size(0), -1)  # Flatten attributions
-        
         # Step 5: Compute Cosine Similarity
-        similarity = torch.abs(F.cosine_similarity(images_flat, attributions_flat, dim=1)) 
+        similarity = torch.abs(F.cosine_similarity(images, attributions, dim=1)) 
         cosine_similarities.extend(similarity.tolist())
 
         # inner_products = torch.sum(images * attributions, dim=(1, 2, 3))
