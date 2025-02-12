@@ -91,9 +91,9 @@ def sal_metrics(model, dataloader, run_id, device, use_infidelity=False, use_max
         # Compute attributions
         sal_attributions = sal.attribute(
             images, target = labels
-        ).sum(axis=1).numpy()
+        ).sum(axis=1).cpu().numpy()
 
-        images, labels = images.numpy(), labels.numpy()
+        images, labels = images.cpu().numpy(), labels.cpu().numpy()
 
         if(use_infidelity):
             sal_results['infidelity'].extend(
@@ -175,9 +175,9 @@ def ig_metrics(model, dataloader, device, run_id, use_infidelity=False, use_max_
         # Compute attributions
         ig_attributions = ig.attribute(
             images, baselines=torch.zeros_like(images), target=labels
-        ).numpy()
+        ).cpu().numpy()
 
-        images, labels = images.numpy(), labels.numpy()
+        images, labels = images.cpu().numpy(), labels.cpu().numpy()
 
         if(use_infidelity):
             ig_results['infidelity'].extend(
