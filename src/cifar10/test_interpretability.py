@@ -52,7 +52,7 @@ def alignment(model, dataloader, run_id, device):
     logger.info(f"Median Alignment(IG): {np.median(cosine_similarities_ig):.4f}")
 
 
-def sal_metrics(model, dataloader, device, run_id, use_infidelity=False, use_max_sensitivity=False, use_sparseness= False):
+def sal_metrics(model, dataloader, run_id, device, use_infidelity=False, use_max_sensitivity=False, use_sparseness= False):
     model.zero_grad()
     sal = Saliency(model)
     logger = logging.getLogger(run_id)
