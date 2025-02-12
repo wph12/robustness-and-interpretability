@@ -33,13 +33,16 @@ def alignment(model, dataloader, run_id, device):
             images, baselines=torch.zeros_like(images), target=labels
         )
 
-        
+        images_flat = images.view(images.size(0), -1)
+
         #Compute Cosine Similarity (saliency)
-        similarity_sal = torch.abs(F.cosine_similarity(images, sal_attributions, dim=1)) 
+        sal_flat = sal_attributions.view(sal_attributions.size(0), -1)
+        similarity_sal = torch.abs(F.cosine_similarity(images_flat, sal_flat, dim=1)) 
         cosine_similarities_sal.extend(similarity_sal.tolist())
 
         #Compute Cosine Similarity (IG)
-        similarity_ig = torch.abs(F.cosine_similarity(images, ig_attributions, dim=1)) 
+        ig_flat = ig_attributions.view(ig_attributions.size(0), -1)
+        similarity_ig = torch.abs(F.cosine_similarity(images_flat, ig_flat, dim=1)) 
         cosine_similarities_ig.extend(similarity_ig.tolist())
 
     #log saliency
