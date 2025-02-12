@@ -80,5 +80,5 @@ if __name__ == "__main__":
 
     if parsed_args.test_interpretable: 
         print("starting interpretability test")
-        alignment(model_conv,dataloaders['test'], run_id, DEVICE)
+        # alignment(model_conv,dataloaders['test'], run_id, DEVICE)
         sal_metrics(model_conv, dataloaders['test'], run_id, DEVICE, use_infidelity=False, use_max_sensitivity=True, use_sparseness = True)
