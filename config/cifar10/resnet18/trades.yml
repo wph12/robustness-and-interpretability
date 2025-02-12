@@ -1,5 +1,5 @@
 adversarial: TRADES
-batch_size: 4
+batch_size: 16
 data_xform: none
 dataset: cifar10
 learning: full 

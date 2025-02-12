@@ -6,69 +6,87 @@ import torch.nn.functional as F
 
 from torchvision import models
 
-from captum.attr import IntegratedGradients, Saliency
+from captum.attr import IntegratedGradients, Saliency #maybe add kernelSHAP?
+import quantus
 
-def integrated_gradient(model, dataloader, run_id, device):
+
+def alignment(model, dataloader, run_id, device):
     logger = logging.getLogger(run_id)
 
-    cosine_similarities = []
+    cosine_similarities_sal = []
+    cosine_similarities_ig = []
     model.zero_grad()
+    sal = Saliency(model)
     ig = IntegratedGradients(model)
 
     for images, labels in dataloader:
+
         images = images.to(device)
         labels = labels.to(device)
 
-        # Compute attributions
-        attributions, _ = ig.attribute(
-            images, baselines=torch.zeros_like(images), target=labels, return_convergence_delta=True
+        sal_attributions = sal.attribute(
+            images, target = labels
         )
         
-        # Step 5: Compute Cosine Similarity
-        similarity = torch.abs(F.cosine_similarity(images, attributions, dim=1))
-        cosine_similarities.extend(similarity.tolist())
+        ig_attributions = ig.attribute(
+            images, baselines=torch.zeros_like(images), target=labels
+        )
 
-    cosine_similarities = torch.tensor(cosine_similarities)
-    mean_similarity = cosine_similarities.mean().item()
+        
+        #Compute Cosine Similarity (saliency)
+        similarity_sal = torch.abs(F.cosine_similarity(images, sal_attributions, dim=1)) 
+        cosine_similarities_sal.extend(similarity_sal.tolist())
 
-    print(f"Mean Cosine Similarity (IG): {mean_similarity:.4f}")
-    logger.info(f"Mean Cosine Similarity (IG): {mean_similarity:.4f}")
+        #Compute Cosine Similarity (IG)
+        similarity_ig = torch.abs(F.cosine_similarity(images, ig_attributions, dim=1)) 
+        cosine_similarities_ig.extend(similarity_ig.tolist())
 
-def saliency(model, dataloader, run_id, device):
+    #log saliency
+    mean_similarity_sal = cosine_similarities_sal.mean().item()
+    logger.info(f"Mean Alignment (Saliency): {mean_similarity_sal:.4f}")
+    median_similarity_sal = cosine_similarities_sal.median().item()
+    logger.info(f"Median Alignment (saliency): {median_similarity_sal:.4f}")
+
+
+    #log ig
+    mean_similarity_ig = cosine_similarities_ig.mean().item()
+    logger.info(f"Mean Alignment (IG): {mean_similarity_ig:.4f}")
+    median_similarity_ig = cosine_similarities_ig.median().item()
+    logger.info(f"Median Alignment(IG): {median_similarity_ig:.4f}")
+
+
+def other_metrics(model, dataloader, run_id, device):
     logger = logging.getLogger(run_id)
-
-    cosine_similarities = []
     model.zero_grad()
     sal = Saliency(model)
+    ig = IntegratedGradients(model)
+
+    #init metrics: infidelity(faithfulness), max-sensitivity(robustness), sparsity(complexity)
+
 
     for images, labels in dataloader:
-
         images = images.to(device)
         labels = labels.to(device)
         # Compute attributions
-        attributions = sal.attribute(
-            images, target=labels
+        sal_attributions = sal.attribute(
+            images, target = labels
         )
         
-        # Step 5: Compute Cosine Similarity
-        similarity = torch.abs(F.cosine_similarity(images, attributions, dim=1)) 
-        cosine_similarities.extend(similarity.tolist())
+        ig_attributions = ig.attribute(
+            images, baselines=torch.zeros_like(images), target=labels
+        )
 
-        # inner_products = torch.sum(images * attributions, dim=(1, 2, 3))
-        # sensitivity_norms = torch.sqrt(torch.sum(attributions**2, dim=(1, 2, 3)))
-        # image_norms = torch.sqrt(torch.sum(images**2, dim=(1, 2, 3)))
-        # norm_products = sensitivity_norms * image_norms
-        # epsilon = 1e-8
-        # correlation = inner_products / (norm_products + epsilon)
-        # cosine_similarities.append(correlation)
+        xai_methods = {
+            "Saliency": sal_attributions,
+            "IntegratedGradients": ig_attributions
+        }
 
-    cosine_similarities = torch.tensor(cosine_similarities)
-    mean_similarity = cosine_similarities.mean().item()
-
-    print(f"Mean Cosine Similarity (Saliency): {mean_similarity:.4f}")
-    logger.info(f"Mean Cosine Similarity (Saliency): {mean_similarity:.4f}")
-
-
-    median_similarity = cosine_similarities.median().item()
-    print(f"Median Cosine Similarity (Saliency): {median_similarity:.4f}")
-    logger.info(f"Median Cosine Similarity (Saliency): {median_similarity:.4f}")
+        results = quantus.evaluate(
+        metrics = metrics,
+        xai_methods=xai_methods,
+        model=model,
+        x_batch=images,
+        y_batch=labels,
+        **{"softmax": False,}
+    )
+    
