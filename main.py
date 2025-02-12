@@ -8,7 +8,7 @@ import yaml
 
 from src.cifar10.data import load_data
 from src.cifar10.test_baseline import test_model
-from src.cifar10.test_interpretability import alignment
+from src.cifar10.test_interpretability import alignment, sal_metrics
 from src.cifar10.test_robust import autoattack_test, autoattack_benchmark
 from src.cifar10.train import init_model, train_model
 from src.utils import get_label, init_log, make_training_deterministic, get_run_id
@@ -81,3 +81,4 @@ if __name__ == "__main__":
     if parsed_args.test_interpretable: 
         print("starting interpretability test")
         alignment(model_conv,dataloaders['test'], run_id, DEVICE)
+        sal_metrics(model_conv, dataloaders['test'], run_id, use_infidelity=False, use_max_sensitivity=True, use_sparseness = True)
