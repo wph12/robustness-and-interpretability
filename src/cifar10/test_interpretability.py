@@ -54,6 +54,7 @@ def alignment(model, dataloader, run_id, device):
 
 def sal_metrics(model, dataloader, run_id, device, use_infidelity=False, use_max_sensitivity=False, use_sparseness= False):
     model.zero_grad()
+    model.cpu()
     sal = Saliency(model)
     logger = logging.getLogger(run_id)
 
@@ -86,14 +87,14 @@ def sal_metrics(model, dataloader, run_id, device, use_infidelity=False, use_max
 
 
     for images, labels in dataloader:
-        images = images.to(device)
-        labels = labels.to(device)
+        images = images.cpu()
+        labels = labels.cpu()
         # Compute attributions
         sal_attributions = sal.attribute(
             images, target = labels
         ).sum(axis=1).cpu().numpy()
 
-        images, labels = images.cpu().numpy(), labels.cpu().numpy()
+        images, labels = images.numpy(), labels.numpy()
 
         if(use_infidelity):
             sal_results['infidelity'].extend(
