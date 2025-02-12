@@ -43,17 +43,13 @@ def alignment(model, dataloader, run_id, device):
         cosine_similarities_ig.extend(similarity_ig.tolist())
 
     #log saliency
-    mean_similarity_sal = cosine_similarities_sal.mean().item()
-    logger.info(f"Mean Alignment (Saliency): {mean_similarity_sal:.4f}")
-    median_similarity_sal = cosine_similarities_sal.median().item()
-    logger.info(f"Median Alignment (saliency): {median_similarity_sal:.4f}")
+    logger.info(f"Mean Alignment (Saliency): {np.mean(cosine_similarities_sal):.4f}")
+    logger.info(f"Median Alignment (saliency): {np.median(cosine_similarities_sal):.4f}")
 
 
     #log ig
-    mean_similarity_ig = cosine_similarities_ig.mean().item()
-    logger.info(f"Mean Alignment (IG): {mean_similarity_ig:.4f}")
-    median_similarity_ig = cosine_similarities_ig.median().item()
-    logger.info(f"Median Alignment(IG): {median_similarity_ig:.4f}")
+    logger.info(f"Mean Alignment (IG): {np.mean(cosine_similarities_ig):.4f}")
+    logger.info(f"Median Alignment(IG): {np.median(cosine_similarities_ig):.4f}")
 
 
 def sal_metrics(model, dataloader, device, run_id, use_infidelity=False, use_max_sensitivity=False, use_sparseness= False):
