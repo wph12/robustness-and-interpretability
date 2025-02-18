@@ -55,7 +55,7 @@ def alignment(model, dataloader, run_id, device):
     logger.info(f"Median Alignment(IG): {np.median(cosine_similarities_ig):.4f}")
 
 
-def sal_metrics(model, dataloader, run_id, device, use_infidelity=False, use_max_sensitivity=False, use_sparseness= False):
+def sal_metrics(model, dataloader, run_id, use_infidelity=False, use_max_sensitivity=False, use_sparseness= False):
     model.zero_grad()
     model.cpu()
     sal = Saliency(model)
@@ -76,10 +76,13 @@ def sal_metrics(model, dataloader, run_id, device, use_infidelity=False, use_max
             perturb_baseline="uniform",
             perturb_func=quantus.perturb_func.baseline_replacement_by_indices,
             n_perturb_samples=10,
+            normalise = False
         )
 
     if(use_sparseness):
-        sparseness = quantus.Sparseness()
+        sparseness = quantus.Sparseness(
+            normalise = False,
+        )
 
 
     sal_results = {
