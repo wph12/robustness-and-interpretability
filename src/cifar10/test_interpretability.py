@@ -159,7 +159,8 @@ def interpretability_metrics(model, dataloader, run_id, xai_method ='sal',
             road_dict = road(model=model,
                         x_batch=images,
                         y_batch=labels,
-                        a_batch=attributions)
+                        a_batch=attributions,
+                        softmax = False)
             for i in range(1, 50, 2):
                 road_results[i].append(road_dict[i])
 
