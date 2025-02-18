@@ -55,7 +55,11 @@ def alignment(model, dataloader, run_id, device):
     logger.info(f"Median Alignment(IG): {np.median(cosine_similarities_ig):.4f}")
 
 
-def interpretability_metrics(model, dataloader, run_id, xai_method ='sal' ,use_infidelity=False, use_max_sensitivity=False, use_sparseness= False, use_road = False):
+def interpretability_metrics(model, dataloader, run_id, xai_method ='sal',
+                             use_infidelity=False, 
+                             use_max_sensitivity=False, 
+                             use_sparseness= False, 
+                             use_road = False):
     model.zero_grad()
     model.cpu()
     if(xai_method == 'sal'):
