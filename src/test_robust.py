@@ -1,5 +1,6 @@
 # uses auto-attack: https://github.com/fra31/auto-attack
 
+import configparser
 import torch
 import os
 import logging
@@ -29,13 +30,20 @@ def autoattack_test(model, test_loader, model_path, batch_size, norm= 'Linf', ep
         
 
 def autoattack_benchmark(model, run_id, device):
+    config = configparser.ConfigParser()
+    config.read("config.ini")
+    data_dir = config["paths"]["data_dir"]
+    data_dir = os.path.expanduser(data_dir)  # expand ~ if used
+    print("data directory: ", data_dir)
+
     logger = logging.getLogger(run_id)
     logger.info('==================<Autoattack Benchmark>==================')
     clean_acc, robust_acc = benchmark(model,
                                     dataset='cifar10',
                                     threat_model='Linf',
                                     device = device,
-                                    eps = 8./255.)
+                                    eps = 8./255.,
+                                    data_dir = "./data")
     logger.info(f'Clean Accuracy: {clean_acc:.4f} Robust Accuracy: {robust_acc:.4f}')
     
 
