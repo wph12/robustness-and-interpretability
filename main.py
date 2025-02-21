@@ -7,10 +7,12 @@ import torch
 import yaml
 
 from src.cifar10.data import load_data
+from src.cifar10.model import init_model
+
 from src.test_baseline import test_model
 from src.test_interpretability import alignment, interpretability_metrics
 from src.test_robust import autoattack_test, autoattack_benchmark
-from src.train import init_model, train_model
+from src.train import train_model
 from src.utils import get_label, init_log, make_training_deterministic, get_run_id
 
 
