@@ -7,9 +7,9 @@ import torch
 import yaml
 
 from src.cifar10.data import load_data
-from src.cifar10.test_baseline import test_model
-from src.cifar10.test_interpretability import integrated_gradient, saliency
-from src.cifar10.test_robust import autoattack_test, autoattack_benchmark
+from src.test_baseline import test_model
+from src.test_interpretability import integrated_gradient, saliency
+from src.test_robust import autoattack_test, autoattack_benchmark
 from src.utils import get_label, init_log
 
 from robustbench.utils import load_model
