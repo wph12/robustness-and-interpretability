@@ -1,5 +1,5 @@
 adversarial: ipgd
-batch_size: 64
+batch_size: 128
 data_xform: none
 dataset: cifar10
 learning: full 
