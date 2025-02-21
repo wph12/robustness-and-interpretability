@@ -41,7 +41,7 @@ if __name__ == "__main__":
     print(f'Len of Class: {len(class_names)}')
     
     #intializes model architecture
-    model_conv, criterion, optimizer_conv, exp_lr_scheduler = init_model(
+    model_conv, criterion, optimizer_conv, lr_scheduler = init_model(
         DEVICE, args, len(class_names))
 
     model_path = ''
@@ -64,8 +64,8 @@ if __name__ == "__main__":
         logger = init_log(args, label, config_file, run_id)
 
         model_conv, model_path = train_model(
-            model_conv, criterion, optimizer_conv, exp_lr_scheduler, label,
-            dataloaders, dataset_sizes, DEVICE, args, run_id, num_epochs=args['num_epochs'])
+            model_conv, criterion, optimizer_conv, lr_scheduler, label,
+            dataloaders, dataset_sizes, DEVICE, args, run_id)
 
     #set to eval mode
     model_conv.eval()

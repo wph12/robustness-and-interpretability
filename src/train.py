@@ -12,13 +12,12 @@ from src.losses import LinfPGDAttack, cross_entropy_with_contrastive, cross_entr
 
 
 def train_model(model, criterion, optimizer, scheduler,
-                label, dataloaders, dataset_sizes, device, args, run_id,
-                num_epochs=25):
+                label, dataloaders, dataset_sizes, device, args, run_id):
     logger = logging.getLogger(run_id)
     logger.info(str(model)) # print/log model architecture
     logger.info("USING DEVICE: %s", device)
 
-
+    num_epochs = args['num_epochs']
     since = time.time()
 
     best_model_params_path = os.path.join(f'logs/{label}/{run_id}_best_model_params.pt')

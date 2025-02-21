@@ -4,3 +4,4 @@ torch
 torchvision
 git+https://github.com/RobustBench/robustbench.git
 quantus
+captum
