@@ -73,8 +73,8 @@ def init_model(DEVICE, args, num_classes):
 
     # Decay LR by a factor of 0.1 every 10 epochs
     if args['num_epochs'] > 50:
-        sched = lr_scheduler.StepLR(optimizer, step_size=50, gamma=0.1)
+        sched = lr_scheduler.CosineAnnealingWarmRestarts(optimizer, args['t_0'], 1)
     else:
-        sched = lr_scheduler.StepLR(optimizer, step_size=10, gamma=0.1)
+        sched = lr_scheduler.CosineAnnealingWarmRestarts(optimizer, args['t_0'], 1)
     return model, loss, optimizer, sched    
 

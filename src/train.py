@@ -1,15 +1,9 @@
 # Import
 import logging
-import numpy as np
 import os
 import time
-
-# Torch
 import torch
-import torch.nn as nn
-import torch.optim as optim
-import torchvision
-from torch.optim import lr_scheduler
+
 
 from robustbench.model_zoo.architectures.resnet import ResNet18
 

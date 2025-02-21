@@ -1,11 +1,12 @@
 adversarial: TRADES
-batch_size: 4
+batch_size: 64
 data_xform: none
 dataset: cifar10
 learning: full 
-learning_rate: 0.001
+learning_rate: 0.1
 loss_function: cross_entropy
 model: resnet18
 momentum: 0.9
-num_epochs: 25
+num_epochs: 30
 optimizer: SGD
+t_0: 6
