@@ -85,6 +85,6 @@ if __name__ == "__main__":
         # alignment(model_conv,dataloaders['test'], run_id, DEVICE)
         interpretability_metrics(model_conv, dataloaders['test'], run_id,xai_method ='sal',
                                  use_infidelity=False, 
-                                 use_max_sensitivity=False, 
-                                 use_sparseness = False, 
+                                 use_max_sensitivity=True, 
+                                 use_sparseness = True, 
                                  use_road= True)

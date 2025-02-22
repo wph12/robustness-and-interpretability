@@ -34,8 +34,8 @@ def load_cifar_data(args,data_dir):
         train_xform += [T.AugMix()]
     train_xform += [
         T.ToTensor(),
-        T.Normalize(mean=[0.4914, 0.4822, 0.4465],
-                    std=[0.247, 0.243, 0.261])
+        # T.Normalize(mean=[0.4914, 0.4822, 0.4465],
+        #             std=[0.247, 0.243, 0.261])
     ]
 
     data_transforms = {
@@ -43,8 +43,8 @@ def load_cifar_data(args,data_dir):
         'val': T.Compose([
             # T.Resize((224, 224)),
             T.ToTensor(),
-            T.Normalize(mean=[0.4914, 0.4822, 0.4465],
-                        std=[0.247, 0.243, 0.261])
+            # T.Normalize(mean=[0.4914, 0.4822, 0.4465],
+            #             std=[0.247, 0.243, 0.261])
         ]),
     }
     print(f'Data transform:\n{data_transforms}')
