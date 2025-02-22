@@ -72,7 +72,7 @@ def init_model(DEVICE, args, num_classes):
     # ===
 
     #cosine annealing
-    if(args['sched'] == 'cosine'):
+    if(args['scheduler'] == 'cosine'):
         sched = optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max= args['num_epochs'])
     else:
         sched = lr_scheduler.StepLR(optimizer, step_size= (args['num_epochs']//3) , gamma=0.1)
