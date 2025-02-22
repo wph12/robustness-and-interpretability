@@ -63,7 +63,7 @@ def init_model(DEVICE, args, num_classes):
         optimizer = optim.SGD(model.parameters(),
                                    lr=args["learning_rate"],
                                    momentum=args["momentum"],
-                                   weight_decay=0.0002)
+                                   weight_decay=0.0005)
     elif args['optimizer'] == 'Adam':
         optimizer = optim.Adam(model.parameters(),
                                     lr=args["learning_rate"])
@@ -71,10 +71,7 @@ def init_model(DEVICE, args, num_classes):
         raise Exception("Optimizer not supported")
     # ===
 
-    # Decay LR by a factor of 0.1 every 10 epochs
-    if args['num_epochs'] > 50:
-        sched = lr_scheduler.CosineAnnealingWarmRestarts(optimizer, args['t_0'], 1)
-    else:
-        sched = lr_scheduler.CosineAnnealingWarmRestarts(optimizer, args['t_0'], 1)
+    #cosine annealing
+    sched = optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max= args['num_epochs'])
     return model, loss, optimizer, sched    
 

@@ -7,6 +7,5 @@ learning_rate: 0.1
 loss_function: cross_entropy_with_contrastive
 model: resnet18
 momentum: 0.9
-num_epochs: 30
+num_epochs: 60
 optimizer: SGD
-t_0: 6
