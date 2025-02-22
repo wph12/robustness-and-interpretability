@@ -63,7 +63,7 @@ def init_model(DEVICE, args, num_classes):
         optimizer = optim.SGD(model.parameters(),
                                    lr=args["learning_rate"],
                                    momentum=args["momentum"],
-                                   weight_decay=0.0005)
+                                   weight_decay=args['weight_decay'])
     elif args['optimizer'] == 'Adam':
         optimizer = optim.Adam(model.parameters(),
                                     lr=args["learning_rate"])
@@ -72,6 +72,11 @@ def init_model(DEVICE, args, num_classes):
     # ===
 
     #cosine annealing
-    sched = optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max= args['num_epochs'])
+    if(args['sched'] == 'cosine'):
+        sched = optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max= args['num_epochs'])
+    else:
+        sched = lr_scheduler.StepLR(optimizer, step_size= (args['num_epochs']//3) , gamma=0.1)
+    
+    print(loss, optimizer, sched)
     return model, loss, optimizer, sched    
 
