@@ -17,12 +17,14 @@ from robustbench.model_zoo.architectures.resnet import ResNet18
 from src.losses import LinfPGDAttack, cross_entropy_with_contrastive, cross_entropy_with_kl, cross_entropy_with_triplet, mixup_data, mixup_criterion, trades_loss
 
 
-def init_model(DEVICE, args, num_classes):
+def init_model(DEVICE, args):
     # ==> MODEL <==
     
     if args['model'] == 'resnet18':
-        model = ResNet18()
-        # model = torchvision.models.resnet18(weights='IMAGENET1K_V1')
+        if(args['dataset'] == 'cifar10'):
+            model = ResNet18()
+        elif(args['dataset'] == 'imagenet'):
+            model = torchvision.models.resnet18(weights='IMAGENET1K_V1')
     elif args['model'] == 'resnet50':
         model = torchvision.models.resnet50(weights='IMAGENET1K_V2')
 

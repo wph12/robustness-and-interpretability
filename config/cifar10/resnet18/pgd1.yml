@@ -12,3 +12,4 @@ optimizer: SGD
 weight_decay: 0.0005
 scheduler: cosine
 pgd_k: 1
+pgd_epsilon: 0.03137254901

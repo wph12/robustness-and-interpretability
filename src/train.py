@@ -26,9 +26,9 @@ def train_model(model, criterion, optimizer, scheduler,
     best_acc = 0.0
 
     if args['adversarial'] == 'pgd':
-        adversary = LinfPGDAttack(model, k= args['pgd_k'])
+        adversary = LinfPGDAttack(model, args)
     if args['adversarial'] == 'ipgd':
-        adversary = LinfPGDAttack(model, k = args['pgd_k'])
+        adversary = LinfPGDAttack(model, args)
 
     for epoch in range(num_epochs):
         logger.info(f'Epoch {epoch}/{num_epochs - 1}')
@@ -127,7 +127,7 @@ def train_model(model, criterion, optimizer, scheduler,
             logger.info(
                 f'{phase} Loss: {epoch_loss:.4f} Acc: {epoch_acc:.4f}')
 
-            # deep copy the model
+            # greedily deep copy the model
             if phase == 'val' and epoch_acc > best_acc:
                 best_acc = epoch_acc
                 torch.save(model.state_dict(), best_model_params_path)

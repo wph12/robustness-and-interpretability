@@ -6,8 +6,9 @@ import os
 import torch
 import yaml
 
-from src.cifar10.data import load_data
-from src.cifar10.model import init_model
+from src.cifar10.data import load_cifar10_data
+from src.imagenet.data import load_imagenet_data
+from src.model import init_model
 
 from src.test_baseline import test_model
 from src.test_interpretability import alignment, interpretability_metrics
@@ -37,12 +38,16 @@ if __name__ == "__main__":
     DEVICE = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
     #creates model dataset
-    dataloaders, dataset_sizes, class_names = load_data(args)
-    print(f'Len of Class: {len(class_names)}')
+    if(args['dataset'] == 'cifar10'):
+        dataloaders, dataset_sizes, data_transforms = load_cifar10_data(args)
+    elif(args['dataset'] == 'imagenet'):
+        dataloaders, dataset_sizes, data_transforms = load_imagenet_data(args)
+    else:
+        raise Exception("Dataset not supported")
     
     #intializes model architecture
     model_conv, criterion, optimizer_conv, lr_scheduler = init_model(
-        DEVICE, args, len(class_names))
+        DEVICE, args)
 
     model_path = ''
     run_id = ''
@@ -78,12 +83,12 @@ if __name__ == "__main__":
     if parsed_args.test_robust:
         print("starting robust test")
         # autoattack_test(model_conv, dataloaders['val'], model_path, args['batch_size'])
-        autoattack_benchmark(model_conv, run_id, DEVICE)
+        autoattack_benchmark(model_conv, run_id, DEVICE, args['dataset'], data_transforms['val'], args['pgd_epsilon'])
 
     if parsed_args.test_interpretable: 
         print("starting interpretability test")
         # alignment(model_conv,dataloaders['test'], run_id, DEVICE)
-        interpretability_metrics(model_conv, dataloaders['test'], run_id,xai_method ='sal',
+        interpretability_metrics(model_conv, dataloaders['test'], run_id, xai_method ='sal',
                                  use_infidelity=False, 
                                  use_max_sensitivity=True, 
                                  use_sparseness = True, 
