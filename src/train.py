@@ -12,7 +12,7 @@ from src.losses import LinfPGDAttack, cross_entropy_with_contrastive, cross_entr
 
 
 def train_model(model, criterion, optimizer, scheduler,
-                label, dataloaders, dataset_sizes, device, args, run_id):
+                label, dataloaders, dataset_sizes, device, args, run_id, epsilon):
     logger = logging.getLogger(run_id)
     logger.info(str(model)) # print/log model architecture
     logger.info("USING DEVICE: %s", device)
@@ -26,9 +26,9 @@ def train_model(model, criterion, optimizer, scheduler,
     best_acc = 0.0
 
     if args['adversarial'] == 'pgd':
-        adversary = LinfPGDAttack(model, args)
+        adversary = LinfPGDAttack(model, args, epsilon)
     if args['adversarial'] == 'ipgd':
-        adversary = LinfPGDAttack(model, args)
+        adversary = LinfPGDAttack(model, args, epsilon)
 
     for epoch in range(num_epochs):
         logger.info(f'Epoch {epoch}/{num_epochs - 1}')

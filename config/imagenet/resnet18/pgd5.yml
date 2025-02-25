@@ -1,14 +1,14 @@
 adversarial: pgd
 batch_size: 128
-data_xform: augmix
+data_xform: none
 dataset: cifar10
 learning: full 
 learning_rate: 0.1
 loss_function: cross_entropy
 model: resnet18
 momentum: 0.9
-num_epochs: 60
+num_epochs: 30
 optimizer: SGD
 weight_decay: 0.0005
 scheduler: cosine
-pgd_k: 10
+pgd_k: 5

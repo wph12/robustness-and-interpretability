@@ -13,10 +13,10 @@ class LinfPGDAttack(object):
     '''Perturb a batch of images using Linf PGD attack
     https://github.com/ndb796/Pytorch-Adversarial-Training-CIFAR/blob/master/pgd_adversarial_training.py
     '''
-    def __init__(self, model, args):
+    def __init__(self, model, args, eps):
         self.model = model
         self.k = args['pgd_k']
-        self.epsilon = args['pgd_epsilon']
+        self.epsilon = eps
         self.alpha = self.epsilon / 4.
 
     def perturb(self, x_natural, y):

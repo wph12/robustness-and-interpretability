@@ -7,7 +7,7 @@ import torch
 import yaml
 
 from src.cifar10.data import load_cifar10_data
-# from src.imagenet.data import load_imagenet_data
+from src.imagenet.data import load_imagenet_data
 from src.model import init_model
 
 from src.test_baseline import test_model
@@ -37,11 +37,13 @@ if __name__ == "__main__":
 
     DEVICE = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-    #creates model dataset
+    #creates dataset and specifies adversarial epsilon ball
+    eps = 8./255.
     if(args['dataset'] == 'cifar10'):
         dataloaders, dataset_sizes, data_transforms = load_cifar10_data(args)
     elif(args['dataset'] == 'imagenet'):
         dataloaders, dataset_sizes, data_transforms = load_imagenet_data(args)
+        eps = 4./255.
     else:
         raise Exception("Dataset not supported")
     
@@ -70,7 +72,7 @@ if __name__ == "__main__":
 
         model_conv, model_path = train_model(
             model_conv, criterion, optimizer_conv, lr_scheduler, label,
-            dataloaders, dataset_sizes, DEVICE, args, run_id)
+            dataloaders, dataset_sizes, DEVICE, args, run_id, epsilon = eps)
 
     #set to eval mode
     model_conv.eval()
@@ -83,7 +85,10 @@ if __name__ == "__main__":
     if parsed_args.test_robust:
         print("starting robust test")
         # autoattack_test(model_conv, dataloaders['val'], model_path, args['batch_size'])
-        autoattack_benchmark(model_conv, run_id, DEVICE, args['dataset'], data_transforms['val'], args['pgd_epsilon'])
+        autoattack_benchmark(model_conv, run_id, DEVICE, 
+                             args['dataset'], 
+                             data_transforms['val'], 
+                             eps)
 
     if parsed_args.test_interpretable: 
         print("starting interpretability test")
