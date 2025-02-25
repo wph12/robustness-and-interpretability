@@ -14,11 +14,11 @@ class LinfPGDAttack(object):
     https://github.com/ndb796/Pytorch-Adversarial-Training-CIFAR/blob/master/pgd_adversarial_training.py
     '''
     epsilon = 8./255.
-    k = 10
     alpha = epsilon/4
 
-    def __init__(self, model):
+    def __init__(self, model, k):
         self.model = model
+        self.k = k
 
     def perturb(self, x_natural, y):
         x = x_natural.detach()

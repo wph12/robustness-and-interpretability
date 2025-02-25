@@ -26,9 +26,9 @@ def train_model(model, criterion, optimizer, scheduler,
     best_acc = 0.0
 
     if args['adversarial'] == 'pgd':
-        adversary = LinfPGDAttack(model)
+        adversary = LinfPGDAttack(model, k= args['pgd_k'])
     if args['adversarial'] == 'ipgd':
-        adversary = LinfPGDAttack(model)
+        adversary = LinfPGDAttack(model, k = args['pgd_k'])
 
     for epoch in range(num_epochs):
         logger.info(f'Epoch {epoch}/{num_epochs - 1}')
