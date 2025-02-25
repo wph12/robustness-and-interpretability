@@ -7,7 +7,7 @@ import torch
 import yaml
 
 from src.cifar10.data import load_cifar10_data
-from src.imagenet.data import load_imagenet_data
+# from src.imagenet.data import load_imagenet_data
 from src.model import init_model
 
 from src.test_baseline import test_model
