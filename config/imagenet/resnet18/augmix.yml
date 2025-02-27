@@ -1,7 +1,7 @@
 adversarial: none
 batch_size: 128
 data_xform: augmix
-dataset: cifar10
+dataset: imagenet
 learning: full 
 learning_rate: 0.1
 loss_function: cross_entropy
