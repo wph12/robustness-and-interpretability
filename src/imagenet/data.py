@@ -59,4 +59,4 @@ def load_imagenet_data(args):
             shuffle=True, num_workers=4, pin_memory=True),
     }
     dataset_sizes = {'train': len(train_dataset), 'val': len(val_dataset), 'test': len(train_dataset)}
-    return dataloaders, dataset_sizes
+    return dataloaders, dataset_sizes, data_transforms
