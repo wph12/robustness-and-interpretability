@@ -46,7 +46,7 @@ if __name__ == "__main__":
         eps = 4./255.
     else:
         raise Exception("Dataset not supported")
-    
+    print("CURRENT EPS: ", eps)
     #intializes model architecture
     model_conv, criterion, optimizer_conv, lr_scheduler = init_model(
         DEVICE, args)
@@ -83,7 +83,7 @@ if __name__ == "__main__":
         test_model(model_conv, dataloaders['test'], criterion, DEVICE, run_id)
 
     if parsed_args.test_robust:
-        print("starting robust test")
+        print("starting robust test, with epsilon being", eps)
         # autoattack_test(model_conv, dataloaders['val'], model_path, args['batch_size'])
         autoattack_benchmark(model_conv, run_id, DEVICE, 
                              args['dataset'], 

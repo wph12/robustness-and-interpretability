@@ -20,17 +20,23 @@ def alignment(model, dataloader, run_id, device):
     sal = Saliency(model)
     ig = IntegratedGradients(model)
 
-    for images, labels in dataloader:
+    for images, _ in dataloader:
 
         images = images.to(device)
-        labels = labels.to(device)
+        # labels = labels.to(device)
+
+        with torch.no_grad():  # No need to compute gradients during testing
+            outputs = model(images)
+            _, preds = torch.max(outputs, 1)
+
+        preds = preds.to(device)
 
         attributions = sal.attribute(
-            images, target = labels
+            images, preds = preds
         )
         
         ig_attributions = ig.attribute(
-            images, baselines=torch.zeros_like(images), target=labels
+            images, baselines=torch.zeros_like(images), target=preds
         )
 
         images_flat = images.view(images.size(0), -1)
@@ -116,33 +122,38 @@ def interpretability_metrics(model, dataloader, run_id, xai_method ='sal',
         for i in range(1, 50, 2):
             road_results[i] = []
 
-    for images, labels in dataloader:
+    for images, _ in dataloader:
         images = images.cpu()
-        labels = labels.cpu()
+        # labels = labels.cpu()
+
+        with torch.no_grad():  # No need to compute gradients during testing
+            outputs = model(images)
+            _, preds = torch.max(outputs, 1)
+        preds = preds.cpu()
         # Compute attributions
         if(xai_method == 'sal'):      
             attributions = sal.attribute(
-                images, target = labels
+                images, target = preds
             ).sum(axis=1).cpu().numpy()
         elif(xai_method == 'ig'):
             attributions = ig.attribute(
-            images, baselines=torch.zeros_like(images), target=labels
+            images, baselines=torch.zeros_like(images), target=preds
         ).cpu().numpy()
         attributions = quantus.functions.normalise_func.normalise_by_average_second_moment_estimate(attributions)
-        images, labels = images.numpy(), labels.numpy()
+        images, preds = images.numpy(), preds.numpy()
 
         if(use_infidelity):
             sal_results['infidelity'].extend(
                 infidelity(model=model,
                         x_batch=images,
-                        y_batch=labels,
+                        y_batch=preds,
                         a_batch=attributions)
             )
         if(use_max_sensitivity):
             sal_results['max_sensitivity'].extend(
                 max_sensitivity(model=model,
                                 x_batch=images,
-                                y_batch=labels,
+                                y_batch=preds,
                                 a_batch=attributions,
                                 explain_func=quantus.explain,
                                 explain_func_kwargs={"method": "Saliency", "softmax": False})
@@ -151,14 +162,14 @@ def interpretability_metrics(model, dataloader, run_id, xai_method ='sal',
             sal_results['sparseness'].extend(
                 sparseness(model=model,
                         x_batch=images,
-                        y_batch=labels,
+                        y_batch=preds,
                         a_batch=attributions)
             )
 
         if(use_road):
             road_dict = road(model=model,
                         x_batch=images,
-                        y_batch=labels,
+                        y_batch=preds,
                         a_batch=attributions,
                         softmax = False)
             for i in range(1, 50, 2):
