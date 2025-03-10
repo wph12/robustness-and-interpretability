@@ -11,14 +11,15 @@ from captum.attr import IntegratedGradients, Saliency #maybe add kernelSHAP?
 import quantus
 
 
-def alignment(model, dataloader, run_id, device):
+def alignment(model, dataloader, run_id, device, use_ig = False):
     logger = logging.getLogger(run_id)
 
     cosine_similarities_sal = []
-    cosine_similarities_ig = []
     model.zero_grad()
     sal = Saliency(model)
-    ig = IntegratedGradients(model)
+    if(use_ig):
+        cosine_similarities_ig = []
+        ig = IntegratedGradients(model)
 
     for images, _ in dataloader:
 
@@ -35,9 +36,7 @@ def alignment(model, dataloader, run_id, device):
             images, preds = preds
         )
         
-        ig_attributions = ig.attribute(
-            images, baselines=torch.zeros_like(images), target=preds
-        )
+        
 
         images_flat = images.view(images.size(0), -1)
 
@@ -46,10 +45,14 @@ def alignment(model, dataloader, run_id, device):
         similarity_sal = torch.abs(F.cosine_similarity(images_flat, sal_flat, dim=1)) 
         cosine_similarities_sal.extend(similarity_sal.tolist())
 
-        #Compute Cosine Similarity (IG)
-        ig_flat = ig_attributions.view(ig_attributions.size(0), -1)
-        similarity_ig = torch.abs(F.cosine_similarity(images_flat, ig_flat, dim=1)) 
-        cosine_similarities_ig.extend(similarity_ig.tolist())
+        if(use_ig):
+            ig_attributions = ig.attribute(
+                images, baselines=torch.zeros_like(images), target=preds
+            )
+            # Compute Cosine Similarity (IG)
+            ig_flat = ig_attributions.view(ig_attributions.size(0), -1)
+            similarity_ig = torch.abs(F.cosine_similarity(images_flat, ig_flat, dim=1)) 
+            cosine_similarities_ig.extend(similarity_ig.tolist())
 
     #log saliency
     logger.info(f"Mean Alignment (Saliency): {np.mean(cosine_similarities_sal):.4f}")
@@ -57,8 +60,9 @@ def alignment(model, dataloader, run_id, device):
 
 
     #log ig
-    logger.info(f"Mean Alignment (IG): {np.mean(cosine_similarities_ig):.4f}")
-    logger.info(f"Median Alignment(IG): {np.median(cosine_similarities_ig):.4f}")
+    if(use_ig):
+        logger.info(f"Mean Alignment (IG): {np.mean(cosine_similarities_ig):.4f}")
+        logger.info(f"Median Alignment(IG): {np.median(cosine_similarities_ig):.4f}")
 
 
 def interpretability_metrics(model, dataloader, run_id, xai_method ='sal',
