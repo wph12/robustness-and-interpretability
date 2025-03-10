@@ -33,11 +33,9 @@ def alignment(model, dataloader, run_id, device, use_ig = False):
         preds = preds.to(device)
 
         attributions = sal.attribute(
-            images, preds = preds
+            images, target = preds
         )
         
-        
-
         images_flat = images.view(images.size(0), -1)
 
         #Compute Cosine Similarity (saliency)
