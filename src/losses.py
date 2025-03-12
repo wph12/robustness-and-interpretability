@@ -18,9 +18,12 @@ class LinfPGDAttack(object):
         self.k = args['pgd_k']
         self.epsilon = eps
         self.alpha = self.epsilon / 4.
+        if(args['dataset'] == 'imagenet'):
+            self.alpha = 2. * self.epsilon / 3.
 
     def perturb(self, x_natural, y):
         x = x_natural.detach()
+        #random start
         x = x + torch.zeros_like(x).uniform_(-self.epsilon, self.epsilon)
         for i in range(self.k):
             x.requires_grad_()
