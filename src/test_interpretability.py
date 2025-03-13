@@ -107,7 +107,7 @@ def interpretability_metrics(model, dataloader, run_id, xai_method ='sal',
         road = quantus.ROAD(
             noise=0.01,
             perturb_func=quantus.perturb_func.noisy_linear_imputation,
-            percentages=list(range(1, 50, 2)),
+            percentages=list(range(1, 100, 1)),
             normalise = False
         )
 
