@@ -138,7 +138,7 @@ def interpretability_metrics(model, dataloader, run_id, xai_method ='sal',
         print("Error (interpretability): Please make sure xai_method is either sal or ig")
         return
     
-    ROAD_RANGE = range(1,50)
+    ROAD_RANGE = range(1,50,2)
 
     if(use_max_sensitivity):
         max_sensitivity = quantus.MaxSensitivity(nr_samples=100,
