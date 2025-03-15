@@ -11,7 +11,7 @@ from src.imagenet.data import load_imagenet_data
 from src.model import init_model
 
 from src.test_baseline import test_model
-from src.test_interpretability import alignment, interpretability_metrics
+from src.test_interpretability import interpretability_metrics
 from src.test_robust import autoattack_test, autoattack_benchmark
 from src.train import train_model
 from src.utils import get_label, init_log, make_training_deterministic, get_run_id
@@ -92,8 +92,9 @@ if __name__ == "__main__":
 
     if parsed_args.test_interpretable: 
         print("starting interpretability test")
-        alignment(model_conv,dataloaders['test'], run_id, DEVICE, use_ig=False)
         interpretability_metrics(model_conv, dataloaders['test'], run_id, xai_method ='sal',
+                                 use_ground_truth= False,
+                                 use_alignment= True,
                                  use_infidelity=False, 
                                  use_max_sensitivity=True, 
                                  use_sparseness = True, 
