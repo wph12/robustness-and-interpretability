@@ -5,7 +5,7 @@ import torchvision.datasets as datasets
 import torchvision.transforms as T
 from torch.utils.data import DataLoader 
 import configparser
-
+import random
 
 
 def load_cifar10_data(args):
@@ -51,6 +51,11 @@ def load_cifar10_data(args):
     #         root=data_dir, train=False, download=True, transform=data_transforms['val'])
     else:
         raise Exception("Dataset not supported")
+    
+    n_samples = 512
+    random.seed(42)
+    random_indices = random.sample(range(len(val_dataset)), k=n_samples)
+    subset = torch.utils.data.Subset(val_dataset, random_indices)
 
     dataloaders = {
         'train': DataLoader(
@@ -62,6 +67,13 @@ def load_cifar10_data(args):
         'test': DataLoader(
             val_dataset, batch_size = args['batch_size'],
             shuffle=True, num_workers=4, pin_memory=True),
+        'mini': DataLoader(
+            subset, batch_size = args['batch_size'],
+            shuffle=True, num_workers=4, pin_memory=True)
     }
-    dataset_sizes = {'train': len(full_dataset), 'val': len(val_dataset), 'test': len(full_dataset)}
+
+    
+
+
+    dataset_sizes = {'train': len(full_dataset), 'val': len(val_dataset), 'test': len(full_dataset), 'mini': len(subset)}
     return dataloaders, dataset_sizes, data_transforms

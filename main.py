@@ -47,6 +47,7 @@ if __name__ == "__main__":
     else:
         raise Exception("Dataset not supported")
     print("CURRENT EPS: ", eps)
+
     #intializes model architecture
     model_conv, criterion, optimizer_conv, lr_scheduler = init_model(
         DEVICE, args)
@@ -70,9 +71,13 @@ if __name__ == "__main__":
 
         logger = init_log(args, label, config_file, run_id)
 
+        no_training_needed = False
+        if(args['dataset'] == 'imagenet' and args['adversarial'] == 'none'):
+            no_training_needed = True
+
         model_conv, model_path = train_model(
             model_conv, criterion, optimizer_conv, lr_scheduler, label,
-            dataloaders, dataset_sizes, DEVICE, args, run_id, epsilon = eps)
+            dataloaders, dataset_sizes, DEVICE, args, run_id, epsilon = eps, dont_train=no_training_needed)
 
     #set to eval mode
     model_conv.eval()
@@ -84,12 +89,19 @@ if __name__ == "__main__":
 
     if parsed_args.test_robust:
         print("starting robust test, with epsilon being", eps)
-        # autoattack_test(model_conv, dataloaders['val'], model_path, args['batch_size'])
-        autoattack_benchmark(model_conv, run_id, DEVICE, 
-                             args['dataset'], 
-                             data_transforms['val'], 
-                             eps)
-
+        
+        if(args['dataset'] == 'cifar10'):
+            autoattack_benchmark(model_conv, run_id, DEVICE, 
+                             dataset=args['dataset'], 
+                             preprocessing=data_transforms['val'], 
+                             eps=eps)
+        elif(args['dataset'] == 'imagenet'):
+            autoattack_benchmark(model_conv, run_id, DEVICE, 
+                             dataset=args['dataset'], 
+                             preprocessing=data_transforms['val'], 
+                             eps=eps,
+                             num_examples=4096)
+        
     if parsed_args.test_interpretable: 
         print("starting interpretability test")
         interpretability_metrics(model_conv, dataloaders['test'], run_id, xai_method ='sal',

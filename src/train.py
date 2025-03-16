@@ -12,7 +12,7 @@ from src.losses import LinfPGDAttack, cross_entropy_with_contrastive, cross_entr
 
 
 def train_model(model, criterion, optimizer, scheduler,
-                label, dataloaders, dataset_sizes, device, args, run_id, epsilon):
+                label, dataloaders, dataset_sizes, device, args, run_id, epsilon, dont_train = False):
     logger = logging.getLogger(run_id)
     logger.info(str(model)) # print/log model architecture
     logger.info("USING DEVICE: %s", device)
@@ -23,6 +23,10 @@ def train_model(model, criterion, optimizer, scheduler,
     best_model_params_path = os.path.join(f'logs/{label}/{run_id}_best_model_params.pt')
 
     torch.save(model.state_dict(), best_model_params_path)
+    if(dont_train):
+        logger.info("NOT ACTUALLY TRAINING")
+        return model, best_model_params_path
+
     best_acc = 0.0
 
     if args['adversarial'] == 'pgd':

@@ -29,7 +29,7 @@ def autoattack_test(model, test_loader, model_path, batch_size, norm= 'Linf', ep
             log_folder_path, run_id, 'aa', 'standard', adv_complete.shape[0], epsilon))
         
 
-def autoattack_benchmark(model, run_id, device, dataset, preprocessing, eps):
+def autoattack_benchmark(model, run_id, device, dataset, preprocessing, eps, num_examples=10000):
     config = configparser.ConfigParser()
     config.read("config.ini")
     data_dir = config["paths"]["data_dir"]
@@ -44,7 +44,8 @@ def autoattack_benchmark(model, run_id, device, dataset, preprocessing, eps):
                                     device = device,
                                     eps = eps,
                                     data_dir = "./data",
-                                    preprocessing = preprocessing)
+                                    preprocessing = preprocessing,
+                                    n_ex = num_examples)
     logger.info(f'Clean Accuracy: {clean_acc:.4f} Robust Accuracy: {robust_acc:.4f}')
     
 
