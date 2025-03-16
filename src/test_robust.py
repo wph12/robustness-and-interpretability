@@ -45,7 +45,7 @@ def autoattack_benchmark(model, run_id, device, dataset, preprocessing, eps, num
                                     eps = eps,
                                     data_dir = "./data",
                                     preprocessing = preprocessing,
-                                    n_ex = num_examples)
+                                    n_examples = num_examples)
     logger.info(f'Clean Accuracy: {clean_acc:.4f} Robust Accuracy: {robust_acc:.4f}')
     
 
