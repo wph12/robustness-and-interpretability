@@ -43,7 +43,7 @@ def autoattack_benchmark(model, run_id, device, dataset, preprocessing, eps, num
                                     threat_model='Linf',
                                     device = device,
                                     eps = eps,
-                                    data_dir = "./data",
+                                    data_dir = data_dir,
                                     preprocessing = preprocessing,
                                     n_examples = num_examples)
     logger.info(f'Clean Accuracy: {clean_acc:.4f} Robust Accuracy: {robust_acc:.4f}')
