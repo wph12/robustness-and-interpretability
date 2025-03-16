@@ -104,10 +104,20 @@ if __name__ == "__main__":
         
     if parsed_args.test_interpretable: 
         print("starting interpretability test")
-        interpretability_metrics(model_conv, dataloaders['test'], run_id, xai_method ='sal',
-                                 use_ground_truth= False,
-                                 use_alignment= True,
-                                 use_infidelity=False, 
-                                 use_max_sensitivity=True, 
-                                 use_sparseness = True, 
-                                 use_road= True)
+        if(args['dataset'] == 'imagenet'):
+                interpretability_metrics(model_conv, dataloaders['mini'], run_id, xai_method ='sal',
+                                    use_ground_truth= False,
+                                    use_alignment= True,
+                                    use_infidelity=False, 
+                                    use_max_sensitivity=True, 
+                                    use_sparseness = True, 
+                                    use_road= True)
+        else: 
+            interpretability_metrics(model_conv, dataloaders['test'], run_id, xai_method ='sal',
+                                    use_ground_truth= False,
+                                    use_alignment= True,
+                                    use_infidelity=False, 
+                                    use_max_sensitivity=True, 
+                                    use_sparseness = True, 
+                                    use_road= True)
+        
