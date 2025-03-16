@@ -6,17 +6,17 @@ import os
 import torch
 import yaml
 
-from src.cifar10.data import load_data
-from src.test_baseline import test_model
-from src.test_interpretability import integrated_gradient, saliency
-from src.test_robust import autoattack_test, autoattack_benchmark
-from src.utils import get_label, init_log
+from src.cifar10.data import load_cifar10_data 
+from src.imagenet.data import load_imagenet_data
+from src.test_interpretability import interpretability_metrics
+from src.test_robust import autoattack_benchmark
+from src.utils import init_log
 
 from robustbench.utils import load_model
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('--config', type=str, default='config/cifar10/resnet18/_baseline.ym') #just config file for cifar10
+    parser.add_argument('--config', type=str, required = True) #config file
     parser.add_argument('--id', type=str, required=True) #robustbench model id
     parser.add_argument('--test-robust', action="store_true")
     parser.add_argument('--test-interpretable', action="store_true")
@@ -26,34 +26,79 @@ if __name__ == "__main__":
 
     # read hyper-parameters from a config file
     config_file = parsed_args.config
-    run_id = parsed_args.id
+    model_id = parsed_args.id
 
     args = yaml.safe_load(open(config_file))
     
     DEVICE = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-    #creates model dataset
-    dataloaders, dataset_sizes, class_names = load_data(args)
-    print(f'Len of Class: {len(class_names)}')
+    #creates dataset and specifies adversarial epsilon ball
+    eps = 8./255.
+    if(args['dataset'] == 'cifar10'):
+        dataloaders, dataset_sizes, data_transforms = load_cifar10_data(args)
+    elif(args['dataset'] == 'imagenet'):
+        dataloaders, dataset_sizes, data_transforms = load_imagenet_data(args)
+        eps = 4./255.
+    else:
+        raise Exception("Dataset not supported")
+    print("CURRENT EPS: ", eps)
+
     
     #intializes model architecture
-    model_conv = load_model(model_name=run_id,
-                dataset='cifar10',
+    model_conv = load_model(model_name=model_id,
+                dataset=args['dataset'],
                 threat_model='Linf',
             )
     
-    logger = init_log(args, 'pretrained', config_file, run_id)
+    logger = init_log(args, 'pretrained', config_file, model_id)
+
 
 
     #set to eval mode
     model_conv.eval()
 
 
-    if parsed_args.test_robust:
-        print("starting robust test")
-        # autoattack_test(model_conv, dataloaders['val'], model_path, args['batch_size'])
-        autoattack_benchmark(model_conv, run_id, DEVICE)
+    # if parsed_args.test_robust:
+    #     print("starting robust test")
+    #     # autoattack_test(model_conv, dataloaders['val'], model_path, args['batch_size'])
+    #     autoattack_benchmark(model_conv, model_id, DEVICE)
 
+    # if parsed_args.test_interpretable: 
+    #     print("starting interpretability test")
+
+    if parsed_args.test_robust:
+        print("starting robust test, with epsilon being", eps)
+        
+        if(args['dataset'] == 'cifar10'):
+            autoattack_benchmark(model_conv, model_id, DEVICE, 
+                             dataset=args['dataset'], 
+                             preprocessing=data_transforms['val'], 
+                             eps=eps)
+        elif(args['dataset'] == 'imagenet'):
+            autoattack_benchmark(model_conv, model_id, DEVICE, 
+                             dataset=args['dataset'], 
+                             preprocessing=data_transforms['val'], 
+                             eps=eps,
+                             num_examples=4096)
+        
     if parsed_args.test_interpretable: 
         print("starting interpretability test")
-        saliency(model_conv,dataloaders['val'], run_id)
+        if(args['dataset'] == 'imagenet'):
+            interpretability_metrics(model_conv, dataloaders['mini'], model_id, xai_method ='sal',
+                                use_ground_truth= False,
+                                use_alignment= True,
+                                use_infidelity=False, 
+                                use_max_sensitivity=True, 
+                                use_sparseness = True, 
+                                use_road= True)
+        else: 
+            interpretability_metrics(model_conv, dataloaders['test'], model_id, xai_method ='sal',
+                                    use_ground_truth= False,
+                                    use_alignment= True,
+                                    use_infidelity=False, 
+                                    use_max_sensitivity=True, 
+                                    use_sparseness = True, 
+                                    use_road= True)
+        
+
+        
