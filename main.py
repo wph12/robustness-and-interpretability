@@ -125,7 +125,7 @@ if __name__ == "__main__":
                                     use_sparseness = False, 
                                     use_road= True)
         else: 
-            interpretability_metrics(model_conv, cifar_proxy, dataloaders['mini'], run_id, xai_method ='random',
+            interpretability_metrics(model_conv, cifar_proxy, dataloaders['mini'], run_id, xai_method ='sal',
                                     use_ground_truth= True,
                                     use_alignment= False,
                                     use_infidelity=False, 
