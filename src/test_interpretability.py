@@ -174,7 +174,7 @@ def interpretability_metrics(model, road_proxy_model, dataloader, run_id, xai_me
         road = quantus.ROAD(
             noise=0.01,
             perturb_func=quantus.perturb_func.noisy_linear_imputation,
-            percentages=list(range(1, 50)),
+            percentages=list(ROAD_RANGE),
             normalise = False
         )
 
