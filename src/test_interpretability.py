@@ -23,7 +23,7 @@ def compute_batched_alignment(image_batch,sal_batch):
     alignment = torch.abs(F.cosine_similarity(images_flat, sal_flat, dim=1))
     return alignment
 
-def compute_batched_road(model, images, labels, attributions, road):
+def compute_batched_road(model, images, labels, attributions, road, monotonic_decrease = False):
     """
     inputs:
         model: the model
@@ -43,6 +43,12 @@ def compute_batched_road(model, images, labels, attributions, road):
         y_batch=labels,
         a_batch=attributions,
         softmax = False)
+    
+    curr_min = 999999
+    if(monotonic_decrease):
+        for key in road_dict:
+            curr_min = min(road_dict[key], curr_min)
+            road_dict[key] = curr_min
 
     return road_dict
 
