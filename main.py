@@ -7,6 +7,7 @@ import torch
 import yaml
 import torchvision
 from robustbench.utils import load_model
+from robustbench.model_zoo.architectures.resnet import ResNet18
 
 from src.cifar10.data import load_cifar10_data
 from src.imagenet.data import load_imagenet_data
@@ -107,14 +108,12 @@ if __name__ == "__main__":
     if parsed_args.test_interpretable: 
         print("starting interpretability test")
         #imagenet pretrained proxy
-        imagenet_proxy = torchvision.models.resnet34()
+        imagenet_proxy = torchvision.models.resnet18()
         imagenet_proxy.eval()
         
         # cifar pretrained proxy
-        cifar_proxy = load_model(model_name='Standard',
-                   dataset='cifar10',
-                   threat_model='Linf')
-        cifar_proxy.eval()
+        cifar_proxy = ResNet18()
+        cifar_proxy.load_state_dict(torch.load("logs/cifar10/resnet18/_baseline.yml/205260d5_best_model_params.pt"))
 
         if(args['dataset'] == 'imagenet'):
                 interpretability_metrics(model_conv, imagenet_proxy, dataloaders['mini'], run_id, xai_method ='sal',
