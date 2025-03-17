@@ -120,8 +120,8 @@ def compute_batched_infidelity(model, images, labels, attributions,infidelity):
                         y_batch=labels,
                         a_batch=attributions)
 
-def interpretability_metrics(model, dataloader, run_id, xai_method ='sal',
-                             use_ground_truth = False,
+def interpretability_metrics(model, road_proxy_model, dataloader, run_id, xai_method ='sal',
+                             use_ground_truth = True,
                              use_infidelity=False,
                              use_alignment=False,
                              use_max_sensitivity=False,
@@ -134,6 +134,8 @@ def interpretability_metrics(model, dataloader, run_id, xai_method ='sal',
         sal = Saliency(model)
     elif (xai_method == 'ig'):
         ig = IntegratedGradients(model)
+    elif(xai_method == 'random'):
+        pass
     else:
         print("Error (interpretability): Please make sure xai_method is either sal or ig")
         return
@@ -185,7 +187,8 @@ def interpretability_metrics(model, dataloader, run_id, xai_method ='sal',
             road_results[i] = []
 
     # Compute attributions
-    for images, labels in dataloader:
+    for batch_id, (images, labels) in enumerate(dataloader):
+        print("Processing batch",batch_id, " out of" ,len(dataloader))
         images = images.cpu()
         labels = labels.cpu()
 
@@ -203,6 +206,8 @@ def interpretability_metrics(model, dataloader, run_id, xai_method ='sal',
             attributions = ig.attribute(
             images, baselines=torch.zeros_like(images), target=labels
         )
+        elif(xai_method == 'random'):
+            attributions = torch.rand_like(images)
 
         if(use_infidelity):
             sal_results['infidelity'].extend(
@@ -237,7 +242,7 @@ def interpretability_metrics(model, dataloader, run_id, xai_method ='sal',
             )
 
         if(use_road):
-            road_dict = compute_batched_road(model=model,
+            road_dict = compute_batched_road(model=road_proxy_model,
                         images=images,
                         labels=labels,
                         attributions=attributions,

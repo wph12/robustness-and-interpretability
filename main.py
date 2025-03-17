@@ -5,6 +5,8 @@ import os
 
 import torch
 import yaml
+import torchvision
+from robustbench.utils import load_model
 
 from src.cifar10.data import load_cifar10_data
 from src.imagenet.data import load_imagenet_data
@@ -104,20 +106,30 @@ if __name__ == "__main__":
         
     if parsed_args.test_interpretable: 
         print("starting interpretability test")
+        #imagenet pretrained proxy
+        imagenet_proxy = torchvision.models.resnet34()
+        imagenet_proxy.eval()
+        
+        # cifar pretrained proxy
+        cifar_proxy = load_model(model_name='Standard',
+                   dataset='cifar10',
+                   threat_model='Linf')
+        cifar_proxy.eval()
+
         if(args['dataset'] == 'imagenet'):
-                interpretability_metrics(model_conv, dataloaders['mini'], run_id, xai_method ='sal',
-                                    use_ground_truth= False,
-                                    use_alignment= True,
+                interpretability_metrics(model_conv, imagenet_proxy, dataloaders['mini'], run_id, xai_method ='sal',
+                                    use_ground_truth= True,
+                                    use_alignment= False,
                                     use_infidelity=False, 
-                                    use_max_sensitivity=True, 
-                                    use_sparseness = True, 
+                                    use_max_sensitivity=False, 
+                                    use_sparseness = False, 
                                     use_road= True)
         else: 
-            interpretability_metrics(model_conv, dataloaders['test'], run_id, xai_method ='sal',
-                                    use_ground_truth= False,
+            interpretability_metrics(model_conv, cifar_proxy, dataloaders['test'], run_id, xai_method ='sal',
+                                    use_ground_truth= True,
                                     use_alignment= True,
                                     use_infidelity=False, 
                                     use_max_sensitivity=True, 
                                     use_sparseness = True, 
-                                    use_road= True)
+                                    use_road= False)
         

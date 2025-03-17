@@ -11,6 +11,7 @@ from src.imagenet.data import load_imagenet_data
 from src.test_interpretability import interpretability_metrics
 from src.test_robust import autoattack_benchmark
 from src.utils import init_log
+import torchvision
 
 from robustbench.utils import load_model
 
@@ -83,22 +84,32 @@ if __name__ == "__main__":
         
     if parsed_args.test_interpretable: 
         print("starting interpretability test")
+        #imagenet pretrained proxy
+        imagenet_proxy = torchvision.models.resnet34()
+        imagenet_proxy.eval()
+        
+        # cifar pretrained proxy
+        cifar_proxy = load_model(model_name='Standard',
+                   dataset='cifar10',
+                   threat_model='Linf')
+        cifar_proxy.eval()
+
         if(args['dataset'] == 'imagenet'):
-            interpretability_metrics(model_conv, dataloaders['mini'], model_id, xai_method ='sal',
-                                use_ground_truth= False,
-                                use_alignment= True,
-                                use_infidelity=False, 
-                                use_max_sensitivity=True, 
-                                use_sparseness = True, 
-                                use_road= True)
-        else: 
-            interpretability_metrics(model_conv, dataloaders['test'], model_id, xai_method ='sal',
-                                    use_ground_truth= False,
+                interpretability_metrics(model_conv, imagenet_proxy, dataloaders['mini'], 'pretrained', xai_method ='sal',
+                                    use_ground_truth= True,
                                     use_alignment= True,
                                     use_infidelity=False, 
                                     use_max_sensitivity=True, 
                                     use_sparseness = True, 
-                                    use_road= True)
+                                    use_road= False)
+        else: 
+            interpretability_metrics(model_conv, cifar_proxy, dataloaders['test'], 'pretrained', xai_method ='sal',
+                                    use_ground_truth= True,
+                                    use_alignment= True,
+                                    use_infidelity=False, 
+                                    use_max_sensitivity=True, 
+                                    use_sparseness = True, 
+                                    use_road= False)
         
 
         
