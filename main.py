@@ -114,7 +114,8 @@ if __name__ == "__main__":
         # cifar pretrained proxy
         cifar_proxy = ResNet18()
         cifar_proxy.load_state_dict(torch.load("logs/cifar10/resnet18/_baseline.yml/205260d5_best_model_params.pt"))
-
+        cifar_proxy.eval()
+        
         if(args['dataset'] == 'imagenet'):
                 interpretability_metrics(model_conv, imagenet_proxy, dataloaders['mini'], run_id, xai_method ='sal',
                                     use_ground_truth= True,
