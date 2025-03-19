@@ -19,6 +19,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--config', type=str, required = True) #config file
     parser.add_argument('--id', type=str, required=True) #robustbench model id
+    parser.add_argument('--test-standard', action="store_true")
     parser.add_argument('--test-robust', action="store_true")
     parser.add_argument('--test-interpretable', action="store_true")
 
