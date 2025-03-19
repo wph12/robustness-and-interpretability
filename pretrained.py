@@ -12,7 +12,7 @@ from src.test_interpretability import interpretability_metrics
 from src.test_robust import autoattack_benchmark
 from src.utils import init_log
 import torchvision
-
+from src.test_baseline import test_model
 from robustbench.utils import load_model
 
 if __name__ == "__main__":
@@ -38,7 +38,7 @@ if __name__ == "__main__":
     if(args['dataset'] == 'cifar10'):
         dataloaders, dataset_sizes, data_transforms = load_cifar10_data(args)
     elif(args['dataset'] == 'imagenet'):
-        dataloaders, dataset_sizes, data_transforms = load_imagenet_data(args)
+        dataloaders, dataset_sizes, data_transforms = load_imagenet_data(args, normalize= False)
         eps = 4./255.
     else:
         raise Exception("Dataset not supported")
@@ -59,13 +59,10 @@ if __name__ == "__main__":
     model_conv.eval()
 
 
-    # if parsed_args.test_robust:
-    #     print("starting robust test")
-    #     # autoattack_test(model_conv, dataloaders['val'], model_path, args['batch_size'])
-    #     autoattack_benchmark(model_conv, model_id, DEVICE)
-
-    # if parsed_args.test_interpretable: 
-    #     print("starting interpretability test")
+    if parsed_args.test_standard:
+        print("starting standard test")
+        # Test the model and log the accuracy for reporting
+        test_model(model_conv, dataloaders['test'], torch.nn.CrossEntropyLoss(), DEVICE, "pretrained")
 
     if parsed_args.test_robust:
         print("starting robust test, with epsilon being", eps)

@@ -8,7 +8,7 @@ import configparser
 import random
 
 
-def load_imagenet_data(args):
+def load_imagenet_data(args, normalize = True):
     config = configparser.ConfigParser()
     config.read("config.ini")
     data_dir = config["paths"]["data_dir"]
@@ -25,19 +25,24 @@ def load_imagenet_data(args):
         T.Resize(256),
         T.CenterCrop(224),
         T.ToTensor(),
-        T.Normalize(mean=[0.485, 0.456, 0.406],
-                    std=[0.229, 0.224, 0.225])
     ]
+
+    val_xform = []
+    val_xform += [
+        T.Resize(256),
+        T.CenterCrop(224),
+        T.ToTensor(),
+    ]
+
+    if(normalize):
+        train_xform += [T.Normalize(mean=[0.485, 0.456, 0.406],
+        std=[0.229, 0.224, 0.225])]
+        val_xform += [T.Normalize(mean=[0.485, 0.456, 0.406],
+        std=[0.229, 0.224, 0.225])]
 
     data_transforms = {
         'train': T.Compose(train_xform),
-        'val': T.Compose([
-            T.Resize(256),
-            T.CenterCrop(224),
-            T.ToTensor(),
-            T.Normalize(mean=[0.485, 0.456, 0.406],
-                    std=[0.229, 0.224, 0.225])
-        ]),
+        'val': T.Compose(val_xform),
     }
     print(f'Data transform:\n{data_transforms}')
 
