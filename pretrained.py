@@ -57,6 +57,7 @@ if __name__ == "__main__":
 
 
     #set to eval mode
+    model_conv.to(DEVICE)
     model_conv.eval()
 
 
