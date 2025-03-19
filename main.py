@@ -106,7 +106,7 @@ if __name__ == "__main__":
                              num_examples=4096)
         
     if parsed_args.test_interpretable: 
-        print("starting interpretability test")
+        print("starting interpretability test on...")
         #imagenet pretrained proxy
         imagenet_proxy = torchvision.models.resnet18()
         imagenet_proxy.eval()
@@ -117,14 +117,16 @@ if __name__ == "__main__":
         cifar_proxy.eval()
 
         if(args['dataset'] == 'imagenet'):
-                interpretability_metrics(model_conv, imagenet_proxy, dataloaders['mini'], run_id, xai_method ='sal',
-                                    use_ground_truth= True,
-                                    use_alignment= False,
-                                    use_infidelity=False, 
-                                    use_max_sensitivity=True, 
-                                    use_sparseness = True, 
-                                    use_road= True)
+            print("imagenet dataset")
+            interpretability_metrics(model_conv, imagenet_proxy, dataloaders['mini'], run_id, xai_method ='sal',
+                                use_ground_truth= True,
+                                use_alignment= False,
+                                use_infidelity=False, 
+                                use_max_sensitivity=False, 
+                                use_sparseness = False, 
+                                use_road= True)
         else: 
+            print("cifar10 dataset")
             interpretability_metrics(model_conv, cifar_proxy, dataloaders['mini'], run_id, xai_method ='sal',
                                     use_ground_truth= True,
                                     use_alignment= False,
