@@ -10,5 +10,5 @@ momentum: 0.9
 num_epochs: 90
 optimizer: SGD
 weight_decay: 0.0001
-scheduler: cosine
+scheduler: step
 pgd_k: 1
