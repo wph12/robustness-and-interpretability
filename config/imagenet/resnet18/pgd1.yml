@@ -5,7 +5,7 @@ dataset: imagenet
 learning: full 
 learning_rate: 0.1
 loss_function: cross_entropy
-model: resnet50
+model: resnet18
 momentum: 0.9
 num_epochs: 90
 optimizer: SGD
