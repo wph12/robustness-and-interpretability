@@ -84,7 +84,9 @@ if __name__ == "__main__":
     if parsed_args.test_interpretable: 
         print("starting interpretability test")
         #imagenet pretrained proxy
-        imagenet_proxy = torchvision.models.resnet18()
+        imagenet_proxy = load_model(model_name='Standard_R50',
+                dataset='imagenet',
+                threat_model='Linf')
         imagenet_proxy.eval()
         
         # cifar pretrained proxy

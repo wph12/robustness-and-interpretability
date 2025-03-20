@@ -136,6 +136,7 @@ def interpretability_metrics(model, road_proxy_model, dataloader, run_id, xai_me
     #initialise models and metrics
     model.zero_grad()
     model.cpu()
+    road_proxy_model.cpu()
     if(xai_method == 'sal'):
         sal = Saliency(model)
     elif (xai_method == 'ig'):
