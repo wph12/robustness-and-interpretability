@@ -147,7 +147,7 @@ def interpretability_metrics(model, road_proxy_model, dataloader, run_id, xai_me
         print("Error (interpretability): Please make sure xai_method is either sal or ig")
         return
     
-    ROAD_RANGE = range(1,100,2)
+    ROAD_RANGE = range(0,100,5)
 
     if(use_max_sensitivity):
         max_sensitivity = quantus.MaxSensitivity(nr_samples=100,
@@ -254,7 +254,7 @@ def interpretability_metrics(model, road_proxy_model, dataloader, run_id, xai_me
                         labels=labels,
                         attributions=attributions,
                         road=road,
-                        monotonic_decrease=True)
+                        monotonic_decrease=False)
             for i in ROAD_RANGE:
                 road_results[i].append(road_dict[i])
 

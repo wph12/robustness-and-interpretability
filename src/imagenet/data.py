@@ -52,7 +52,7 @@ def load_imagenet_data(args, normalize = True):
     val_dataset = datasets.ImageNet(
         root=data_dir, split='val', transform=data_transforms['val'])
     n_samples = 512
-    random.seed(42)
+    random.seed(0)
     random_indices = random.sample(range(len(val_dataset)), k=n_samples)
     subset = torch.utils.data.Subset(val_dataset, random_indices)
 
