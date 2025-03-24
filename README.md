@@ -12,6 +12,6 @@ Robustness is assessed with adversarial accuracy using AutoAttack, while interpr
 2. Execute `pip install -r requirements.txt` in the root of this repository
 3. Choose a configuration file from the `config` directory
 3. Run `python3 main.py --config config/cifar10/resnet18/pgd.yml --test-standard --test-robust --test-interpretable`, passing in your chosen file as an arugment, to train and evaluate a model
-4. The trained model, as well as as a log file showing the results, are saved to the `logs` directory. To load a previously trained model for evaluation, the path to the `.pt` file may be passed as a `--state` argument:
+4. The trained model, as well as as a log file showing the results, are saved to the `logs` directory. To load a previously trained model for evaluation, the path to the `.pt` file may be passed as a `--state` argument, based on the following example: 
 `python3 main.py --config config/cifar10/resnet18/pgd.yml --state logs/cifar10/resnet18/pgd.yml/80a5c0a1_best_model_params.pt --test-standard --test-robust --test-interpretable`
 
