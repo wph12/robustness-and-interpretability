@@ -44,7 +44,7 @@ def compute_batched_road(model, images, labels, attributions, road, monotonic_de
         a_batch=attributions,
         softmax = False)
     
-    curr_min = 999999
+    curr_min = 1
     if(monotonic_decrease):
         for key in road_dict:
             curr_min = min(road_dict[key], curr_min)

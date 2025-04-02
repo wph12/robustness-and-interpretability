@@ -84,7 +84,7 @@ if __name__ == "__main__":
     if parsed_args.test_interpretable: 
         print("starting interpretability test")
         #imagenet pretrained proxy
-        imagenet_proxy = load_model(model_name='Salman2020Do_R50',
+        imagenet_proxy = load_model(model_name='Tian2022Deeper_DeiT-B',
                 dataset='imagenet',
                 threat_model='Linf')
         imagenet_proxy.eval()
@@ -100,17 +100,17 @@ if __name__ == "__main__":
                                 use_ground_truth= True,
                                 use_alignment= False,
                                 use_infidelity=False, 
-                                use_max_sensitivity=True, 
-                                use_sparseness = True, 
+                                use_max_sensitivity=False, 
+                                use_sparseness = False, 
                                 use_road= True)
         else: 
-            interpretability_metrics(model_conv, cifar_proxy, dataloaders['test'], 'pretrained', xai_method ='sal',
+            interpretability_metrics(model_conv, cifar_proxy, dataloaders['mini'], 'pretrained', xai_method ='sal',
                                     use_ground_truth= True,
                                     use_alignment= False,
                                     use_infidelity=False, 
-                                    use_max_sensitivity=True, 
-                                    use_sparseness = True, 
-                                    use_road= False)
+                                    use_max_sensitivity=False, 
+                                    use_sparseness = False, 
+                                    use_road= True)
         
 
         

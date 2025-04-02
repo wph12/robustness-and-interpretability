@@ -108,17 +108,25 @@ if __name__ == "__main__":
     if parsed_args.test_interpretable: 
         print("starting interpretability test on...")
         #imagenet pretrained proxy
-        imagenet_proxy = torchvision.models.resnet18()
+        imagenet_proxy = load_model(model_name='Tian2022Deeper_DeiT-B',
+                dataset='imagenet',
+                threat_model='Linf')
         imagenet_proxy.eval()
         
         # cifar pretrained proxy
-        cifar_proxy = ResNet18()
-        cifar_proxy.load_state_dict(torch.load("logs/cifar10/resnet18/_baseline.yml/205260d5_best_model_params.pt"))
+        cifar_proxy = load_model(model_name='Standard',
+                   dataset='cifar10',
+                   threat_model='Linf')
         cifar_proxy.eval()
+        
+        # # cifar pretrained proxy
+        # cifar_proxy = ResNet18()
+        # cifar_proxy.load_state_dict(torch.load("logs/cifar10/resnet18/_baseline.yml/205260d5_best_model_params.pt"))
+        # cifar_proxy.eval()
 
         if(args['dataset'] == 'imagenet'):
             print("imagenet dataset")
-            interpretability_metrics(model_conv, imagenet_proxy, dataloaders['test'], run_id, xai_method ='sal',
+            interpretability_metrics(model_conv, imagenet_proxy, dataloaders['mini'], run_id, xai_method ='sal',
                                 use_ground_truth= True,
                                 use_alignment= False,
                                 use_infidelity=False, 
@@ -127,7 +135,7 @@ if __name__ == "__main__":
                                 use_road= True)
         else: 
             print("cifar10 dataset")
-            interpretability_metrics(model_conv, cifar_proxy, dataloaders['test'], run_id, xai_method ='sal',
+            interpretability_metrics(model_conv, cifar_proxy, dataloaders['mini'], run_id, xai_method ='sal',
                                     use_ground_truth= True,
                                     use_alignment= False,
                                     use_infidelity=False, 
