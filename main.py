@@ -110,7 +110,7 @@ if __name__ == "__main__":
         #imagenet pretrained proxy
         imagenet_proxy = load_model(model_name='Tian2022Deeper_DeiT-B',
                 dataset='imagenet',
-                threat_model='Linf')
+                threat_model='corruptions')
         imagenet_proxy.eval()
         
         # cifar pretrained proxy
