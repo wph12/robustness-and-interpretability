@@ -6,6 +6,8 @@ Codebase for the paper "ON ROBUSTNESS AND INTERPRETABILITY IN CONVOLUTIONAL NEUR
 Models are trained to various degrees of adversarial accuracy
 Robustness is assessed with adversarial accuracy using AutoAttack, while interpretability is evaluated based on the explanation quality of saliency maps - quantified using the ROAD AUC, Sparseness, and Max-Sensitivity metrics.
 
+![cifar_qualitative drawio](https://github.com/user-attachments/assets/cc1b0abd-bc54-4d99-8096-edb99a211aa2)
+
 
 ### Running experiments ###
 1. Edit `config.ini` to point to the directory used to store the CIFAR-10 and ImageNet datasets. For ImageNet, the `ILSVRC2012_devkit_t12.tar.gz`, `ILSVRC2012_img_train.tar` and `ILSVRC2012_img_val.tar` files should be downloaded from https://image-net.org/challenges/LSVRC/2012/2012-downloads.php and placed into this directory. 
