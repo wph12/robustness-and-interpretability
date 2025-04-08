@@ -84,9 +84,9 @@ if __name__ == "__main__":
     if parsed_args.test_interpretable: 
         print("starting interpretability test")
         #imagenet pretrained proxy
-        imagenet_proxy = load_model(model_name='Tian2022Deeper_DeiT-B',
+        imagenet_proxy = load_model(model_name='Salman2020Do_R50',
                 dataset='imagenet',
-                threat_model='corruptions')
+                threat_model='Linf')
         imagenet_proxy.eval()
         
         # cifar pretrained proxy
