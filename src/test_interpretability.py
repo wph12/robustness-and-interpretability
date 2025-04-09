@@ -35,7 +35,7 @@ def compute_batched_road(model, images, labels, attributions, road, monotonic_de
     """
     images = images.cpu().numpy()
     labels = labels.cpu().numpy()
-    attributions = attributions.sum(axis=1).cpu().numpy()
+    attributions = attributions.sum(axis=1).cpu().detach().numpy()
 
     road_dict = road(model=model,
         x_batch=images,
@@ -64,7 +64,7 @@ def compute_batched_maxsens(model, images, labels, attributions, max_sensitivity
     """
     images = images.cpu().numpy()
     labels = labels.cpu().numpy()
-    attributions = attributions.sum(axis=1).cpu().numpy()
+    attributions = attributions.sum(axis=1).cpu().detach().numpy()
     attributions = quantus.functions.normalise_func.normalise_by_average_second_moment_estimate(attributions)
 
     max_sensitivity = quantus.MaxSensitivity(nr_samples=100,
@@ -95,7 +95,7 @@ def compute_batched_sparseness(model, images, labels, attributions, sparseness):
     """
     images = images.cpu().numpy()
     labels = labels.cpu().numpy()
-    attributions = attributions.sum(axis=1).cpu().numpy()
+    attributions = attributions.sum(axis=1).cpu().detach().numpy()
     attributions = quantus.functions.normalise_func.normalise_by_average_second_moment_estimate(attributions)
 
 
@@ -117,7 +117,7 @@ def compute_batched_infidelity(model, images, labels, attributions,infidelity):
     """
     images = images.cpu().numpy()
     labels = labels.cpu().numpy()
-    attributions = attributions.sum(axis=1).cpu().numpy()
+    attributions = attributions.sum(axis=1).detach().cpu().numpy()
     attributions = quantus.functions.normalise_func.normalise_by_average_second_moment_estimate(attributions)
 
     return infidelity(model=model,
