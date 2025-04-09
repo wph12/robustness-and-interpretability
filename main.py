@@ -135,11 +135,11 @@ if __name__ == "__main__":
                                 use_road= True)
         else: 
             print("cifar10 dataset")
-            interpretability_metrics(model_conv, cifar_proxy, dataloaders['mini'], run_id, xai_method ='sal',
+            interpretability_metrics(model_conv, cifar_proxy, dataloaders['mini'], run_id, xai_method ='deeplift',
                                     use_ground_truth= True,
                                     use_alignment= False,
                                     use_infidelity=False, 
-                                    use_max_sensitivity=False, 
-                                    use_sparseness = False, 
+                                    use_max_sensitivity=True, 
+                                    use_sparseness = True, 
                                     use_road= True)
         

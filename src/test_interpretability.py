@@ -7,9 +7,8 @@ import numpy as np
 
 from torchvision import models
 from sklearn.metrics import auc
-from captum.attr import IntegratedGradients, Saliency #maybe add kernelSHAP?
+from captum.attr import IntegratedGradients, Saliency, DeepLift #maybe add kernelSHAP?
 import quantus
-
 def compute_batched_alignment(image_batch,sal_batch):
     """
     inputs:
@@ -141,6 +140,8 @@ def interpretability_metrics(model, road_proxy_model, dataloader, run_id, xai_me
         sal = Saliency(model)
     elif (xai_method == 'ig'):
         ig = IntegratedGradients(model)
+    elif (xai_method == 'deeplift'):
+        dl = DeepLift(model)
     elif(xai_method == 'random'):
         pass
     else:
@@ -213,6 +214,9 @@ def interpretability_metrics(model, road_proxy_model, dataloader, run_id, xai_me
             attributions = ig.attribute(
             images, baselines=torch.zeros_like(images), target=labels
         )
+        elif (xai_method == 'deeplift'):
+            attributions = dl.attribute(
+            images, target=labels)
         elif(xai_method == 'random'):
             attributions = torch.rand_like(images)
 
