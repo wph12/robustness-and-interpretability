@@ -33,8 +33,8 @@ def compute_batched_road(model, images, labels, attributions, road, monotonic_de
     return:
         dictionary of ROAD scores with {percentage perturbed : batch average score}
     """
-    images = images.cpu().numpy()
-    labels = labels.cpu().numpy()
+    images = images.cpu().detach().numpy()
+    labels = labels.cpu().detach().numpy()
     attributions = attributions.sum(axis=1).cpu().detach().numpy()
 
     road_dict = road(model=model,
@@ -62,8 +62,8 @@ def compute_batched_maxsens(model, images, labels, attributions, max_sensitivity
     return:
         array-like of size(batch_size) representing max-sensitivity values
     """
-    images = images.cpu().numpy()
-    labels = labels.cpu().numpy()
+    images = images.cpu().detach().numpy()
+    labels = labels.cpu().detach().numpy()
     attributions = attributions.sum(axis=1).cpu().detach().numpy()
     attributions = quantus.functions.normalise_func.normalise_by_average_second_moment_estimate(attributions)
 
@@ -93,8 +93,8 @@ def compute_batched_sparseness(model, images, labels, attributions, sparseness):
     return:
         array-like of size(batch_size) representing sparseness of the saliency maps
     """
-    images = images.cpu().numpy()
-    labels = labels.cpu().numpy()
+    images = images.cpu().detach().numpy()
+    labels = labels.cpu().detach().numpy()
     attributions = attributions.sum(axis=1).cpu().detach().numpy()
     attributions = quantus.functions.normalise_func.normalise_by_average_second_moment_estimate(attributions)
 
@@ -115,8 +115,8 @@ def compute_batched_infidelity(model, images, labels, attributions,infidelity):
     return:
         array-like of size(batch_size) representing infidelity of the saliency maps
     """
-    images = images.cpu().numpy()
-    labels = labels.cpu().numpy()
+    images = images.cpu().detach().numpy()
+    labels = labels.cpu().detach().numpy()
     attributions = attributions.sum(axis=1).detach().cpu().numpy()
     attributions = quantus.functions.normalise_func.normalise_by_average_second_moment_estimate(attributions)
 
