@@ -113,16 +113,16 @@ if __name__ == "__main__":
                 threat_model='corruptions')
         imagenet_proxy.eval()
         
-        # cifar pretrained proxy
-        # cifar_proxy = load_model(model_name='Standard',
-        #            dataset='cifar10',
-        #            threat_model='Linf')
-        # cifar_proxy.eval()
+        # # cifar pretrained proxy
+        cifar_proxy = load_model(model_name='Standard',
+                   dataset='cifar10',
+                   threat_model='Linf')
+        cifar_proxy.eval()
         
         # # cifar pretrained proxy
-        cifar_proxy = ResNet18()
-        cifar_proxy.load_state_dict(torch.load("logs/cifar10/resnet18/_baseline.yml/205260d5_best_model_params.pt"))
-        cifar_proxy.eval()
+        # cifar_proxy = ResNet18()
+        # cifar_proxy.load_state_dict(torch.load("logs/cifar10/resnet18/_baseline.yml/205260d5_best_model_params.pt"))
+        # cifar_proxy.eval()
 
         if(args['dataset'] == 'imagenet'):
             print("imagenet dataset")
