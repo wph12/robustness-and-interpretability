@@ -7,7 +7,7 @@ import numpy as np
 
 from torchvision import models
 from sklearn.metrics import auc
-from captum.attr import IntegratedGradients, Saliency, DeepLift #maybe add kernelSHAP?
+from captum.attr import IntegratedGradients, Saliency, DeepLift, Occlusion #maybe add kernelSHAP?
 import quantus
 def compute_batched_alignment(image_batch,sal_batch):
     """
@@ -131,7 +131,8 @@ def interpretability_metrics(model, road_proxy_model, dataloader, run_id, xai_me
                              use_alignment=False,
                              use_max_sensitivity=False,
                              use_sparseness= False,
-                             use_road = False):
+                             use_road = False,
+                             occlusion_size = 4):
     #initialise models and metrics
     model.zero_grad()
     model.cpu()
@@ -142,10 +143,12 @@ def interpretability_metrics(model, road_proxy_model, dataloader, run_id, xai_me
         ig = IntegratedGradients(model)
     elif (xai_method == 'deeplift'):
         dl = DeepLift(model)
+    elif (xai_method == 'occlusion'):
+        oc = Occlusion(model)
     elif(xai_method == 'random'):
         pass
     else:
-        print("Error (interpretability): Please make sure xai_method is either sal or ig")
+        print("Error (interpretability): Please make sure xai_method is supported")
         return
     
     ROAD_RANGE = range(0,100,5)
@@ -219,6 +222,10 @@ def interpretability_metrics(model, road_proxy_model, dataloader, run_id, xai_me
             images, target=labels)
         elif(xai_method == 'random'):
             attributions = torch.rand_like(images)
+        elif(xai_method == 'occlusion'):
+            attributions = oc.attribute(images, target = labels, 
+                                        sliding_window_shapes = (3,occlusion_size,occlusion_size), 
+                                        strides = occlusion_size // 2)
 
         if(use_infidelity):
             sal_results['infidelity'].extend(
