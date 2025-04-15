@@ -102,7 +102,8 @@ if __name__ == "__main__":
                                 use_infidelity=False, 
                                 use_max_sensitivity=True, 
                                 use_sparseness = True, 
-                                use_road= True)
+                                use_road= True,
+                                occlusion_size=20)
         else: 
             interpretability_metrics(model_conv, cifar_proxy, dataloaders['mini'], 'pretrained', xai_method ='occlusion',
                                     use_ground_truth= True,
@@ -110,7 +111,8 @@ if __name__ == "__main__":
                                     use_infidelity=False, 
                                     use_max_sensitivity=False, 
                                     use_sparseness = False, 
-                                    use_road= True)
+                                    use_road= True,
+                                    occlusion_size=20)
         
 
         
