@@ -96,15 +96,15 @@ if __name__ == "__main__":
         cifar_proxy.eval()
 
         if(args['dataset'] == 'imagenet'):
-            interpretability_metrics(model_conv, imagenet_proxy, dataloaders['mini'], 'pretrained', xai_method ='sal',
+            interpretability_metrics(model_conv, imagenet_proxy, dataloaders['mini'], 'pretrained', xai_method ='occlusion',
                                 use_ground_truth= True,
                                 use_alignment= False,
                                 use_infidelity=False, 
-                                use_max_sensitivity=False, 
-                                use_sparseness = False, 
+                                use_max_sensitivity=True, 
+                                use_sparseness = True, 
                                 use_road= True)
         else: 
-            interpretability_metrics(model_conv, cifar_proxy, dataloaders['mini'], 'pretrained', xai_method ='sal',
+            interpretability_metrics(model_conv, cifar_proxy, dataloaders['mini'], 'pretrained', xai_method ='occlusion',
                                     use_ground_truth= True,
                                     use_alignment= False,
                                     use_infidelity=False, 
