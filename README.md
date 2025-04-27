@@ -3,7 +3,6 @@
 ### Description ###
 Codebase for the paper "ON ROBUSTNESS AND INTERPRETABILITY IN CONVOLUTIONAL NEURAL NETWORKS", a final year project done at NTU.
 
-Models are trained to various degrees of adversarial accuracy
 Robustness is assessed with adversarial accuracy using AutoAttack, while interpretability is evaluated based on the explanation quality of saliency maps - quantified using the ROAD AUC, Sparseness, and Max-Sensitivity metrics.
 
 ![cifar_qualitative drawio](https://github.com/user-attachments/assets/cc1b0abd-bc54-4d99-8096-edb99a211aa2)
